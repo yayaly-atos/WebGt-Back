@@ -15,5 +15,6 @@ namespace G2T.Models
         [EnumDataType(typeof(StatutIncident))]
         public StatutIncident Statut { get; set; }
         public EntiteEnCharge EntiteEnCharge { get; set; }
+        public Contact Contact { get; set; }    
     }
 }

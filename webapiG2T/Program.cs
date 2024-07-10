@@ -1,5 +1,9 @@
 using G2T.Data;
+using G2T.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using webapiG2T.Services.Implementations;
+using webapiG2T.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,13 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddIdentity<Utilisateur, IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>();
+
+// builder.Services.ConfigureApplicationCookie(op => op.LoginPath = "/UserAuthentication/Login");
+
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 var app = builder.Build();
 

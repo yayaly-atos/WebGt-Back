@@ -14,5 +14,6 @@ namespace G2T.Models
         [EnumDataType(typeof(Statut))]
         public Statut Statut { get; set; }
         public Compte Compte { get; set; }
+        public ICollection<Incident> Incidents { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace G2T.Data
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Facture> Factures { get; set; }
         public DbSet<Utilisateur> Utilisateurs { get; set; }
-        public DbSet<Profil> Profils { get; set; }
+        public DbSet<EntiteEnCharge> EntiteEnCharges { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,14 @@ namespace G2T.Data
             modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
             modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
             modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+            modelBuilder.Entity<Compte>()
+                .ToTable(c => c.HasCheckConstraint("ck_compte_tc", "TypeCompte IN ('Entreprise', 'Particulier')"));
+            modelBuilder.Entity<Compte>()
+                .ToTable(c => c.HasCheckConstraint("ck_contact_s", "Statut IN ('Actif', 'Inactif')"));
+            modelBuilder.Entity<Contact>()
+                .ToTable(c => c.HasCheckConstraint("ck_compte_tc", "Statut IN ('Actif', 'Inactif')"));
+
+
             modelBuilder.Entity<Compte>()
                 .Property(c => c.TypeCompte)
                 .HasConversion<string>();
