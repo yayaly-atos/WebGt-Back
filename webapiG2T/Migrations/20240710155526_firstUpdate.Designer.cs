@@ -4,6 +4,7 @@ using G2T.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace webapiG2T.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240710155526_firstUpdate")]
+    partial class firstUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,13 +60,11 @@ namespace webapiG2T.Migrations
                     b.Property<decimal>("Solde")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("StatutCompte")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Statut")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TypeCompte")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TypeCompte")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -93,9 +94,8 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StatutContact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Statut")
+                        .HasColumnType("int");
 
                     b.Property<string>("Telephone")
                         .IsRequired()
@@ -148,9 +148,8 @@ namespace webapiG2T.Migrations
                     b.Property<decimal>("Montant")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("StatutFacture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Statut")
+                        .HasColumnType("int");
 
                     b.HasKey("CompteId", "ServiceId");
 
@@ -171,6 +170,7 @@ namespace webapiG2T.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Commentaire")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ContactId")
@@ -189,9 +189,8 @@ namespace webapiG2T.Migrations
                     b.Property<int>("SousMotifId")
                         .HasColumnType("int");
 
-                    b.Property<string>("StatutIncident")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Statut")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -237,11 +236,7 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeService")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TypeServiceId")
+                    b.Property<int>("TypeServiceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -540,9 +535,13 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.Service", b =>
                 {
-                    b.HasOne("G2T.Models.TypeService", null)
+                    b.HasOne("G2T.Models.TypeService", "TypeService")
                         .WithMany("Services")
-                        .HasForeignKey("TypeServiceId");
+                        .HasForeignKey("TypeServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypeService");
                 });
 
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>

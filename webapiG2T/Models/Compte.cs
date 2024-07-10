@@ -7,15 +7,11 @@ namespace G2T.Models
     {
         public int Id { get; set; }
         public string NomCompte { get; set; }
-
-        [EnumDataType(typeof(TypeCompte))]
-        public TypeCompte TypeCompte { get; set; }
+        public string TypeCompte { get; set; }
         public DateTime DateOuverture { get; set; }
-
-        [EnumDataType(typeof(Statut))]
-        public Statut Statut { get; set; }
+        public string StatutCompte { get; set; }
         public decimal Solde { get; set; }
-        public ICollection<Contact> Contacts { get; set; }
-        public ICollection<Facture> Factures { get; set; }
+        public ICollection<Contact>? Contacts { get; set; }
+        public ICollection<Facture>? Factures { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace G2T.Models
         public int Id { get; set; }
         public string NomEntiteEnCharge { get; set; }
         public Boolean Responsable { get; set; }
-        public ICollection<Utilisateur> Utilisateurs { get; set; }
-        public ICollection<Incident> Incidents { get; set; }
+        public ICollection<Utilisateur>? Utilisateurs { get; set; }
+        public ICollection<Incident>? Incidents { get; set; }
     }
 }

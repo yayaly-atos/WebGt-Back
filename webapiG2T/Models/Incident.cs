@@ -10,10 +10,8 @@ namespace G2T.Models
         public Motif Motif { get; set; }
         public SousMotif SousMotif { get; set; }
         public string Description { get; set; }
-        public string Commentaire { get; set; }
-
-        [EnumDataType(typeof(StatutIncident))]
-        public StatutIncident Statut { get; set; }
+        public string? Commentaire { get; set; }
+        public string StatutIncident { get; set; }
         public EntiteEnCharge EntiteEnCharge { get; set; }
         public Contact Contact { get; set; }    
     }

@@ -30,29 +30,7 @@ namespace G2T.Data
             modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
             modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
             modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
-            modelBuilder.Entity<Compte>()
-                .ToTable(c => c.HasCheckConstraint("ck_compte_tc", "TypeCompte IN ('Entreprise', 'Particulier')"));
-            modelBuilder.Entity<Compte>()
-                .ToTable(c => c.HasCheckConstraint("ck_contact_s", "Statut IN ('Actif', 'Inactif')"));
-            modelBuilder.Entity<Contact>()
-                .ToTable(c => c.HasCheckConstraint("ck_compte_tc", "Statut IN ('Actif', 'Inactif')"));
 
-
-            modelBuilder.Entity<Compte>()
-                .Property(c => c.TypeCompte)
-                .HasConversion<string>();
-            modelBuilder.Entity<Compte>()
-                .Property(c => c.Statut)
-                .HasConversion<string>();
-            modelBuilder.Entity<Contact>()
-                .Property(c => c.Statut)
-                .HasConversion<string>();
-            modelBuilder.Entity<Incident>()
-                .Property(i => i.Statut)
-                .HasConversion<string>();
-            modelBuilder.Entity<Facture>()
-                .Property(f => f.Statut)
-                .HasConversion<string>();
             modelBuilder.Entity<Facture>()
                 .HasKey(f => new { f.CompteId, f.ServiceId });
             modelBuilder.Entity<Facture>()

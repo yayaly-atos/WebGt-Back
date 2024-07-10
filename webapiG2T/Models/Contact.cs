@@ -10,10 +10,8 @@ namespace G2T.Models
         public string Prenom { get; set; }
         public string Telephone { get; set; }
         public string Adresse { get; set; }
-
-        [EnumDataType(typeof(Statut))]
-        public Statut Statut { get; set; }
+        public string StatutContact { get; set; }
         public Compte Compte { get; set; }
-        public ICollection<Incident> Incidents { get; set; }
+        public ICollection<Incident>? Incidents { get; set; }
     }
 }
