@@ -2,6 +2,7 @@ using G2T.Data;
 using G2T.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using webapiG2T.Services.Implementations;
 using webapiG2T.Services.Interfaces;
 
@@ -21,10 +22,17 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddIdentity<Utilisateur, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 // builder.Services.ConfigureApplicationCookie(op => op.LoginPath = "/UserAuthentication/Login");
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 var app = builder.Build();
 
