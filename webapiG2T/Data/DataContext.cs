@@ -27,9 +27,21 @@ namespace G2T.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+            {
+                entity.HasKey(i => new { i.LoginProvider, i.ProviderKey });
+                entity.HasOne<Utilisateur>().WithMany().HasForeignKey(i => i.UserId);
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+            {
+                entity.HasKey(i => new { i.UserId, i.RoleId });
+                entity.HasOne<IdentityRole>().WithMany().HasForeignKey(i => i.RoleId);
+            });
+            modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+            {
+                entity.HasKey(i => new { i.UserId, i.LoginProvider, i.Name });
+            });
 
             modelBuilder.Entity<Facture>()
                 .HasKey(f => new { f.CompteId, f.ServiceId });
