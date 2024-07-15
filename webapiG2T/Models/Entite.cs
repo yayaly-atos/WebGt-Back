@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace G2T.Models
 {
-    public class EntiteEnCharge
+    public class Entite
     {
         public int Id { get; set; }
-        public string NomEntiteEnCharge { get; set; }
-        public Boolean Responsable { get; set; }
+        public string NomEntite { get; set; }
+        public Boolean ResponsableEntite { get; set; }
         public ICollection<Utilisateur>? Utilisateurs { get; set; }
         public ICollection<Incident>? Incidents { get; set; }
     }

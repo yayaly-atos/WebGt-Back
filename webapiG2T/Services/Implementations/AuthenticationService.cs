@@ -64,7 +64,7 @@ namespace webapiG2T.Services.Implementations
                 return new RegisterResponse { Status = "Error", Message = "User already exists!" };
 
 
-            var entiteEnCharge = new EntiteEnCharge();
+            var entiteEnCharge = new Entite();
             if(model.Role == "Teleconseiller" || model.Role == "Admin")
             {
                 entiteEnCharge = null;
@@ -81,7 +81,7 @@ namespace webapiG2T.Services.Implementations
                 UserName = model.Username,
                 Nom = model.Nom,
                 Prenom = model.Prenom,
-                EntiteEnCharge = entiteEnCharge
+                Entite = entiteEnCharge
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
@@ -121,9 +121,9 @@ namespace webapiG2T.Services.Implementations
             return Tuple.Create(tokenString, expiration);
         }
 
-        public EntiteEnCharge getEntite(string nom, Boolean responsable)
+        public Entite getEntite(string nom, Boolean responsable)
         {
-            var entite = _context.EntiteEnCharges.FirstOrDefault(e => e.NomEntiteEnCharge == nom && e.Responsable.Equals(responsable));
+            var entite = _context.Entite.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
             return entite;
         }
     }

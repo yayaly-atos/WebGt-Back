@@ -108,7 +108,7 @@ namespace webapiG2T.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("G2T.Models.EntiteEnCharge", b =>
+            modelBuilder.Entity("G2T.Models.Entite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,16 +116,16 @@ namespace webapiG2T.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NomEntiteEnCharge")
+                    b.Property<string>("NomEntite")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Responsable")
+                    b.Property<bool>("ResponsableEntite")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.ToTable("EntiteEnCharges");
+                    b.ToTable("Entite");
                 });
 
             modelBuilder.Entity("G2T.Models.Facture", b =>
@@ -180,7 +180,7 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EntiteEnChargeId")
+                    b.Property<int>("EntiteId")
                         .HasColumnType("int");
 
                     b.Property<int>("MotifId")
@@ -199,7 +199,7 @@ namespace webapiG2T.Migrations
 
                     b.HasIndex("ContactId");
 
-                    b.HasIndex("EntiteEnChargeId");
+                    b.HasIndex("EntiteId");
 
                     b.HasIndex("MotifId");
 
@@ -302,7 +302,7 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("EntiteEnChargeId")
+                    b.Property<int?>("EntiteId")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -345,7 +345,7 @@ namespace webapiG2T.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntiteEnChargeId");
+                    b.HasIndex("EntiteId");
 
                     b.ToTable("Utilisateur");
                 });
@@ -512,9 +512,9 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.EntiteEnCharge", "EntiteEnCharge")
+                    b.HasOne("G2T.Models.Entite", "Entite")
                         .WithMany("Incidents")
-                        .HasForeignKey("EntiteEnChargeId")
+                        .HasForeignKey("EntiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -534,7 +534,7 @@ namespace webapiG2T.Migrations
 
                     b.Navigation("Contact");
 
-                    b.Navigation("EntiteEnCharge");
+                    b.Navigation("Entite");
 
                     b.Navigation("Motif");
 
@@ -550,11 +550,11 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>
                 {
-                    b.HasOne("G2T.Models.EntiteEnCharge", "EntiteEnCharge")
+                    b.HasOne("G2T.Models.Entite", "Entite")
                         .WithMany("Utilisateurs")
-                        .HasForeignKey("EntiteEnChargeId");
+                        .HasForeignKey("EntiteId");
 
-                    b.Navigation("EntiteEnCharge");
+                    b.Navigation("Entite");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -590,7 +590,7 @@ namespace webapiG2T.Migrations
                     b.Navigation("Incidents");
                 });
 
-            modelBuilder.Entity("G2T.Models.EntiteEnCharge", b =>
+            modelBuilder.Entity("G2T.Models.Entite", b =>
                 {
                     b.Navigation("Incidents");
 

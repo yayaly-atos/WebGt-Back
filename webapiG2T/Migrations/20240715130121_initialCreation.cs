@@ -42,17 +42,17 @@ namespace webapiG2T.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EntiteEnCharges",
+                name: "Entite",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomEntiteEnCharge = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Responsable = table.Column<bool>(type: "bit", nullable: false)
+                    NomEntite = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResponsableEntite = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EntiteEnCharges", x => x.Id);
+                    table.PrimaryKey("PK_Entite", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,7 +183,7 @@ namespace webapiG2T.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prenom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntiteEnChargeId = table.Column<int>(type: "int", nullable: true),
+                    EntiteId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -203,9 +203,9 @@ namespace webapiG2T.Migrations
                 {
                     table.PrimaryKey("PK_Utilisateur", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Utilisateur_EntiteEnCharges_EntiteEnChargeId",
-                        column: x => x.EntiteEnChargeId,
-                        principalTable: "EntiteEnCharges",
+                        name: "FK_Utilisateur_Entite_EntiteId",
+                        column: x => x.EntiteId,
+                        principalTable: "Entite",
                         principalColumn: "Id");
                 });
 
@@ -259,7 +259,7 @@ namespace webapiG2T.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StatutIncident = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntiteEnChargeId = table.Column<int>(type: "int", nullable: false),
+                    EntiteId = table.Column<int>(type: "int", nullable: false),
                     ContactId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -278,9 +278,9 @@ namespace webapiG2T.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Incidents_EntiteEnCharges_EntiteEnChargeId",
-                        column: x => x.EntiteEnChargeId,
-                        principalTable: "EntiteEnCharges",
+                        name: "FK_Incidents_Entite_EntiteId",
+                        column: x => x.EntiteId,
+                        principalTable: "Entite",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -366,9 +366,9 @@ namespace webapiG2T.Migrations
                 column: "ContactId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incidents_EntiteEnChargeId",
+                name: "IX_Incidents_EntiteId",
                 table: "Incidents",
-                column: "EntiteEnChargeId");
+                column: "EntiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_MotifId",
@@ -396,9 +396,9 @@ namespace webapiG2T.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Utilisateur_EntiteEnChargeId",
+                name: "IX_Utilisateur_EntiteId",
                 table: "Utilisateur",
-                column: "EntiteEnChargeId");
+                column: "EntiteId");
         }
 
         /// <inheritdoc />
@@ -453,7 +453,7 @@ namespace webapiG2T.Migrations
                 name: "Comptes");
 
             migrationBuilder.DropTable(
-                name: "EntiteEnCharges");
+                name: "Entite");
         }
     }
 }

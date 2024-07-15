@@ -8,6 +8,6 @@ namespace G2T.Models
     {
         public string Nom { get; set; }
         public string Prenom { get; set; }
-        public EntiteEnCharge? EntiteEnCharge { get; set; }
+        public Entite? Entite{ get; set; }
     }
 }
