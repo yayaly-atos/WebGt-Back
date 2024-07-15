@@ -22,7 +22,7 @@ namespace G2T.Data
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Facture> Factures { get; set; }
         public DbSet<Utilisateur> Utilisateurs { get; set; }
-        public DbSet<Entite> Entite { get; set; }
+        public DbSet<Entite> Entites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

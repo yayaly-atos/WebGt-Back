@@ -9,7 +9,7 @@
         public string Description { get; set; }
         public string Commentaire { get; set; }
         public string StatutIncident { get; set; }
-        public string EntiteEnCharge { get; set; }
+        public string Entite { get; set; }
         public ContactDto Contact { get; set; }
     }
 }
