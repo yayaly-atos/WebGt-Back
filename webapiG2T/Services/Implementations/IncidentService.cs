@@ -1,5 +1,6 @@
 ﻿using G2T.Data;
 using G2T.Models;
+using G2T.Models.enums;
 using Microsoft.EntityFrameworkCore;
 using webapiG2T.Models.Dto;
 using webapiG2T.Services.Interfaces;
@@ -18,10 +19,10 @@ namespace webapiG2T.Services.Implementations
         public async Task<IEnumerable<Incident>> GetAllIncidentsAsync()
         {
             return await _context.Incidents
-                 .Include(i => i.Canal)
+                .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
-                .Include(i => i.EntiteEnCharge)
+                .Include(i => i.Entite)
                 .Include(i => i.Contact)
                 .ToListAsync();
         }
@@ -33,7 +34,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
-                .Include(i => i.EntiteEnCharge)
+                .Include(i => i.Entite)
                 .Where(i => i.Id == incidentId && i.Contact.Telephone == phoneNumber)
                 .Select(i => MapToIncidentDto(i))
                 .FirstOrDefaultAsync();
@@ -47,7 +48,7 @@ namespace webapiG2T.Services.Implementations
                   .Include(i => i.Canal)
                   .Include(i => i.Motif)
                   .Include(i => i.SousMotif)
-                  .Include(i => i.EntiteEnCharge)
+                  .Include(i => i.Entite)
                   .Where(i => i.Contact.Telephone == phoneNumber)
                   .Select(i => MapToIncidentDto(i))
                   .ToListAsync();
@@ -58,10 +59,11 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
                    .Include(i => i.Contact)
+                   .ThenInclude(c => c.Compte)
                    .Include(i => i.Canal)
                    .Include(i => i.Motif)
                    .Include(i => i.SousMotif)
-                   .Include(i => i.EntiteEnCharge)
+                   .Include(i => i.Entite)
                    .Where(i => i.Id == incidentId)
                    .Select(i => MapToIncidentDto(i))
                    .FirstOrDefaultAsync();
@@ -69,10 +71,76 @@ namespace webapiG2T.Services.Implementations
             return incident;
 
         }
+        public async Task<IncidentDto> CreateIncidentAsync(IncidentDto incidentDto)
+        {
+            var incident = await MapToIncident(incidentDto);
+            _context.Incidents.Add(incident);
+            await _context.SaveChangesAsync();
 
+
+            return MapToIncidentDto(incident);
+        }
+
+        public async Task<IncidentDto> UpdateIncidentStatusAsync(int id, string StatutIncident)
+        {
+            try
+            {
+                var existingIncident = await _context.Incidents
+                    .Include(i => i.Contact)
+                    .Include(i => i.Canal)
+                    .Include(i => i.Motif)
+                    .Include(i => i.SousMotif)
+                    .Include(i => i.Entite)
+                    .FirstOrDefaultAsync(i => i.Id == id);
+
+                if (existingIncident == null)
+                {
+                    return null;
+                }
+             
+                existingIncident.Contact.StatutContact = StatutIncident;         
+                await _context.SaveChangesAsync();
+                return MapToIncidentDto(existingIncident);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the incident.", ex);
+            }
+        }
+        public async Task<IncidentDto> UpdateIncidenEscaladetAsync(int id)
+        {
+            var existingIncident = await _context.Incidents
+              .Include(i => i.Contact)
+              .ThenInclude(c => c.Compte)
+              .Include(i => i.Canal)
+              .Include(i => i.Motif)
+              .Include(i => i.SousMotif)
+              .Include(i => i.Entite)
+              .FirstOrDefaultAsync(i => i.Id == id);
+            if (existingIncident == null)
+            {
+                return null;
+            }
+            int newEntiteEnChargeId = existingIncident.Entite.Id + 1;
+
+          
+            var newEntiteEnCharge = await _context.Entite.FindAsync(newEntiteEnChargeId);
+            if (newEntiteEnCharge == null)
+            {
+               
+                return null;
+            }
+
+            existingIncident.Entite= newEntiteEnCharge;
+            await _context.SaveChangesAsync();
+
+            return MapToIncidentDto(existingIncident);
+
+        }
 
         private static IncidentDto MapToIncidentDto(Incident i)
         {
+
             return new IncidentDto
             {
                 Id = i.Id,
@@ -82,7 +150,7 @@ namespace webapiG2T.Services.Implementations
                 Description = i.Description,
                 Commentaire = i.Commentaire,
                 StatutIncident = i.StatutIncident,
-                EntiteEnCharge = i.EntiteEnCharge.NomEntiteEnCharge,
+                EntiteEnCharge = i.Entite.NomEntite,
                 Contact = new ContactDto
                 {
                     Id = i.Contact.Id,
@@ -90,7 +158,8 @@ namespace webapiG2T.Services.Implementations
                     Prenom = i.Contact.Prenom,
                     Telephone = i.Contact.Telephone,
                     Adresse = i.Contact.Adresse,
-                    StatutContact = i.Contact.StatutContact
+                    StatutContact = i.Contact.StatutContact,
+                    CompteId = i.Contact.Compte.Id  
                 }
             };
         }
@@ -105,19 +174,28 @@ namespace webapiG2T.Services.Implementations
                 Description = dto.Description,
                 Commentaire = dto.Commentaire,
                 StatutIncident = dto.StatutIncident,
-                EntiteEnCharge = await _context.EntiteEnCharges.FirstOrDefaultAsync(e => e.NomEntiteEnCharge == dto.EntiteEnCharge),
+                Entite = await _context.Entite.FirstOrDefaultAsync(e => e.NomEntite == dto.EntiteEnCharge),
                 Contact = await MapToContact(dto.Contact)
             };
         }
         private async Task<Contact> MapToContact(ContactDto dto)
         {
-
             var existingContact = await _context.Contacts.FirstOrDefaultAsync(c => c.Telephone == dto.Telephone);
             if (existingContact != null)
             {
+                
+                   var existingCompte = await _context.Comptes.FirstOrDefaultAsync(c => c.Id == dto.CompteId);
+                    if (existingCompte != null)
+                    {
+                        existingContact.Compte = existingCompte;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Le compte avec l'ID {dto.CompteId} n'existe pas.");
+                    }
+                
                 return existingContact;
-            }
-
+            }    
             return new Contact
             {
                 Id = dto.Id,
@@ -125,7 +203,8 @@ namespace webapiG2T.Services.Implementations
                 Prenom = dto.Prenom,
                 Telephone = dto.Telephone,
                 Adresse = dto.Adresse,
-                StatutContact = dto.StatutContact
+                StatutContact = dto.StatutContact,     
+                Compte = await _context.Comptes.FirstOrDefaultAsync(c => c.Id == dto.CompteId) 
             };
         }
     }
