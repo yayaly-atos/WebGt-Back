@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using webapiG2T.Models;
 
 namespace G2T.Data
 {
@@ -23,6 +24,7 @@ namespace G2T.Data
         public DbSet<Facture> Factures { get; set; }
         public DbSet<Utilisateur> Utilisateurs { get; set; }
         public DbSet<Entite> Entites { get; set; }
+        public DbSet<RevoquerToken> RevoquerTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

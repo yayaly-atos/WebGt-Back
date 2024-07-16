@@ -8,5 +8,6 @@ namespace G2T.Models
         public string NomService { get; set; }
         public string TypeService { get; set; }
         public ICollection<Facture>? Factures { get; set; }
+        public ICollection<Incident>? Incidents { get; set; }
     }
 }

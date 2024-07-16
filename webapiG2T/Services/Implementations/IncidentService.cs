@@ -22,7 +22,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
-                .Include(i => i.Entite)
+                .Include(i => i.Entites)
                 .Include(i => i.Contact)
                 .ToListAsync();
         }
@@ -34,7 +34,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
-                .Include(i => i.Entite)
+                .Include(i => i.Entites)
                 .Where(i => i.Id == incidentId && i.Contact.Telephone == phoneNumber)
                 .Select(i => MapToIncidentDto(i))
                 .FirstOrDefaultAsync();
@@ -48,7 +48,7 @@ namespace webapiG2T.Services.Implementations
                   .Include(i => i.Canal)
                   .Include(i => i.Motif)
                   .Include(i => i.SousMotif)
-                  .Include(i => i.Entite)
+                  .Include(i => i.Entites)
                   .Where(i => i.Contact.Telephone == phoneNumber)
                   .Select(i => MapToIncidentDto(i))
                   .ToListAsync();
@@ -63,7 +63,7 @@ namespace webapiG2T.Services.Implementations
                    .Include(i => i.Canal)
                    .Include(i => i.Motif)
                    .Include(i => i.SousMotif)
-                   .Include(i => i.Entite)
+                   .Include(i => i.Entites)
                    .Where(i => i.Id == incidentId)
                    .Select(i => MapToIncidentDto(i))
                    .FirstOrDefaultAsync();
@@ -90,7 +90,7 @@ namespace webapiG2T.Services.Implementations
                     .Include(i => i.Canal)
                     .Include(i => i.Motif)
                     .Include(i => i.SousMotif)
-                    .Include(i => i.Entite)
+                    .Include(i => i.Entites)
                     .FirstOrDefaultAsync(i => i.Id == id);
 
                 if (existingIncident == null)
@@ -115,13 +115,13 @@ namespace webapiG2T.Services.Implementations
               .Include(i => i.Canal)
               .Include(i => i.Motif)
               .Include(i => i.SousMotif)
-              .Include(i => i.Entite)
+              .Include(i => i.Entites)
               .FirstOrDefaultAsync(i => i.Id == id);
             if (existingIncident == null)
             {
                 return null;
             }
-            int newEntiteEnChargeId = existingIncident.Entite.Id + 1;
+            int newEntiteEnChargeId = existingIncident.Entites.Id + 1;
 
           
             var newEntiteEnCharge = await _context.Entites.FindAsync(newEntiteEnChargeId);
@@ -131,7 +131,7 @@ namespace webapiG2T.Services.Implementations
                 return null;
             }
 
-            existingIncident.Entite= newEntiteEnCharge;
+            existingIncident.Entites= newEntiteEnCharge;
             await _context.SaveChangesAsync();
 
             return MapToIncidentDto(existingIncident);
@@ -150,7 +150,7 @@ namespace webapiG2T.Services.Implementations
                 Description = i.Description,
                 Commentaire = i.Commentaire,
                 StatutIncident = i.StatutIncident,
-                Entite = i.Entite.NomEntite,
+                Entite = i.Entites.NomEntite,
  
                 Contact = new ContactDto
                 {
@@ -175,7 +175,7 @@ namespace webapiG2T.Services.Implementations
                 Description = dto.Description,
                 Commentaire = dto.Commentaire,
                 StatutIncident = dto.StatutIncident,
-                Entite = await _context.Entites.FirstOrDefaultAsync(e => e.NomEntite == dto.Entite),
+                Entite = await _context.Entitess.FirstOrDefaultAsync(e => e.NomEntite == dto.Entites),
                 
                 Contact = await MapToContact(dto.Contact)
             };

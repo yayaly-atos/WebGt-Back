@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using G2T.Data;
 using G2T.Models;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using webapiG2T.Models;
 using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
 
@@ -16,16 +18,20 @@ namespace webapiG2T.Services.Implementations
     public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<Utilisateur> userManager;
+        private readonly SignInManager<Utilisateur> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IRevoquerTokenService _tokenService;
 
-        public AuthenticationService(UserManager<Utilisateur> userManager, RoleManager<IdentityRole> roleManager, DataContext _context, IConfiguration configuration)
+        public AuthenticationService(UserManager<Utilisateur> userManager, SignInManager<Utilisateur> signInManager, RoleManager<IdentityRole> roleManager, DataContext _context, IConfiguration configuration, IRevoquerTokenService tokenService)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
             this.roleManager = roleManager;
             this._context = _context;
             _configuration = configuration;
+            _tokenService = tokenService;
         }
         
         public async Task<AuthenticationResponse> Login(LoginModel model)
@@ -99,11 +105,6 @@ namespace webapiG2T.Services.Implementations
             return new RegisterResponse { Status = "Success", Message = "User created successfully!" };
         }
 
-        public Task Logout()
-        {
-            throw new NotImplementedException();
-        }
-
         public static Tuple<string, DateTime>  GenerateToken(string secret, List<Claim> claims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
@@ -125,6 +126,11 @@ namespace webapiG2T.Services.Implementations
         {
             var entite = _context.Entites.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
             return entite;
+        }
+
+        public async Task Logout()
+        {
+            await signInManager.SignOutAsync();
         }
     }
 }

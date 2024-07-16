@@ -28,10 +28,12 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
+builder.Services.AddAuthentication().AddJwtBearer();
 
 // builder.Services.ConfigureApplicationCookie(op => op.LoginPath = "/UserAuthentication/Login");
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 var app = builder.Build();
@@ -45,6 +47,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

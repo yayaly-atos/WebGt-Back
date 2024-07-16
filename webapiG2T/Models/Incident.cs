@@ -12,7 +12,8 @@ namespace G2T.Models
         public string Description { get; set; }
         public string? Commentaire { get; set; }
         public string StatutIncident { get; set; }
-        public Entite Entite { get; set; }
-        public Contact Contact { get; set; }    
+        public ICollection<Entite> Entites { get; set; }
+        public Contact Contact { get; set; }
+        public Service Service { get; set; }
     }
 }
