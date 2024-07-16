@@ -11,7 +11,8 @@ namespace webapiG2T.Services.Interfaces
         Task<List<IncidentDto>> GetIncidentsByPhoneNumberAsync(string phoneNumber);
         Task<IncidentDto> GetIncidentByIDAsync(int incidentId);
         Task<IncidentDto> CreateIncidentAsync(IncidentDto incidentDto);
-        Task<IncidentDto> UpdateIncidentStatusAsync(int id, string StatutIncident);
+        Task<String> UpdateIncidentStatusAsync(int id, string StatutIncident);
         Task<IncidentDto> UpdateIncidenEscaladetAsync(int id);
+        Task<String> UpdateIncidentCommentAsync(int id, string commentaire);
     }
 }

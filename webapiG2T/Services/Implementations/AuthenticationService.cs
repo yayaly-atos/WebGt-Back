@@ -2,8 +2,6 @@
 using G2T.Data;
 using G2T.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -123,7 +121,7 @@ namespace webapiG2T.Services.Implementations
 
         public Entite getEntite(string nom, Boolean responsable)
         {
-            var entite = _context.Entites.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
+            var entite = _context.Entite.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
             return entite;
         }
     }

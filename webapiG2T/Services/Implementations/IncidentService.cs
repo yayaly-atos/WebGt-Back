@@ -81,12 +81,13 @@ namespace webapiG2T.Services.Implementations
             return MapToIncidentDto(incident);
         }
 
-        public async Task<IncidentDto> UpdateIncidentStatusAsync(int id, string StatutIncident)
+        public async Task<String> UpdateIncidentStatusAsync(int id, string StatutIncident)
         {
             try
             {
                 var existingIncident = await _context.Incidents
                     .Include(i => i.Contact)
+                    .ThenInclude(c => c.Compte)
                     .Include(i => i.Canal)
                     .Include(i => i.Motif)
                     .Include(i => i.SousMotif)
@@ -98,9 +99,36 @@ namespace webapiG2T.Services.Implementations
                     return null;
                 }
              
-                existingIncident.Contact.StatutContact = StatutIncident;         
+                existingIncident.StatutIncident = StatutIncident;         
                 await _context.SaveChangesAsync();
-                return MapToIncidentDto(existingIncident);
+                return $"Le statut de l'incident numéro {id} a été changé en {StatutIncident} avec succès.";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the incident.", ex);
+            }
+        }
+        public async Task<String> UpdateIncidentCommentAsync(int id, string commentaire)
+        {
+            try
+            {
+                var existingIncident = await _context.Incidents
+                    .Include(i => i.Contact)
+                    .ThenInclude(c => c.Compte)
+                    .Include(i => i.Canal)
+                    .Include(i => i.Motif)
+                    .Include(i => i.SousMotif)
+                    .Include(i => i.Entite)
+                    .FirstOrDefaultAsync(i => i.Id == id);
+
+                if (existingIncident == null)
+                {
+                    return null;
+                }
+
+                existingIncident.Commentaire = commentaire;
+                await _context.SaveChangesAsync();
+                return $"Le commentaire de l'incident numéro {id} a été changé  avec succès.";
             }
             catch (Exception ex)
             {
@@ -124,7 +152,7 @@ namespace webapiG2T.Services.Implementations
             int newEntiteEnChargeId = existingIncident.Entite.Id + 1;
 
           
-            var newEntiteEnCharge = await _context.Entites.FindAsync(newEntiteEnChargeId);
+            var newEntiteEnCharge = await _context.Entite.FindAsync(newEntiteEnChargeId);
             if (newEntiteEnCharge == null)
             {
                
@@ -175,7 +203,7 @@ namespace webapiG2T.Services.Implementations
                 Description = dto.Description,
                 Commentaire = dto.Commentaire,
                 StatutIncident = dto.StatutIncident,
-                Entite = await _context.Entites.FirstOrDefaultAsync(e => e.NomEntite == dto.Entite),
+                Entite = await _context.Entite.FirstOrDefaultAsync(e => e.NomEntite == dto.Entite),
                 
                 Contact = await MapToContact(dto.Contact)
             };
