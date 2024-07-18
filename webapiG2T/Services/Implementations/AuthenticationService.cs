@@ -68,15 +68,15 @@ namespace webapiG2T.Services.Implementations
                 return new RegisterResponse { Status = "Error", Message = "User already exists!" };
 
 
-            var entiteEnCharge = new Entite();
-            if(model.Role == "Teleconseiller" || model.Role == "Admin")
-            {
-                entiteEnCharge = null;
-            }
-            else
-            {
-                entiteEnCharge = this.getEntite(model.EntiteSupport, model.isResponsable);
-            }
+            //var entiteEnCharge = new EntiteSupport();
+            //if(model.Role == "Teleconseiller" || model.Role == "Admin")
+            //{
+            //    entiteEnCharge = null;
+            //}
+            //else
+            //{
+            //    entiteEnCharge = this.getEntite(model.EntiteSupport, model.isResponsable);
+            //}
 
             Utilisateur user = new Utilisateur()
             {
@@ -85,7 +85,7 @@ namespace webapiG2T.Services.Implementations
                 UserName = model.Username,
                 Nom = model.Nom,
                 Prenom = model.Prenom,
-                Entite = entiteEnCharge
+                //EntiteSupport = entiteEnCharge
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
@@ -120,11 +120,11 @@ namespace webapiG2T.Services.Implementations
             return Tuple.Create(tokenString, expiration);
         }
 
-        public Entite getEntite(string nom, Boolean responsable)
-        {
-            var entite = _context.Entites.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
-            return entite;
-        }
+        //public EntiteSupport getEntite(string nom, Boolean responsable)
+        //{
+        //    var entite = _context.Entites.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
+        //    return entite;
+        //}
 
         public async Task Logout()
         {

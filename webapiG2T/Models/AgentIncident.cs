@@ -2,12 +2,13 @@
 
 namespace webapiG2T.Models
 {
-    public class ServiceIncident
+    public class AgentIncident
     {
-        public int ServiceId { get; set; }
+        public int AgentId { get; set; }
         public int IncidentId { get; set; }
-        public Service Service { get; set; }
+        public Agent Agent { get; set; }
         public Incident Incident { get; set; }
         public DateTime DateAffectation { get; set; }
+        public string Commentaire { get; set; }
     }
 }

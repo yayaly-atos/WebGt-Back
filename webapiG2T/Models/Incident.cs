@@ -1,5 +1,6 @@
 ﻿using G2T.Models.enums;
 using System.ComponentModel.DataAnnotations;
+using webapiG2T.Models;
 
 namespace G2T.Models
 {
@@ -12,9 +13,9 @@ namespace G2T.Models
         public string Description { get; set; }
         public string? Commentaire { get; set; }
         public string StatutIncident { get; set; }
-        public ICollection<Entite> Entites { get; set; }
-        public ICollection<Agent> Agents { get; set; }
         public Contact Contact { get; set; }
         public Service Service { get; set; }
+        public ICollection<AgentIncident>? AgentIncidents { get; set; }
+        public Teleconseiller Teleconseiller { get; set; }
     }
 }
