@@ -10,5 +10,6 @@ namespace G2T.Models
         public Boolean ResponsableEntite { get; set; }
         public ICollection<Utilisateur>? Utilisateurs { get; set; }
         public ICollection<Incident>? Incidents { get; set; }
+        public ICollection<Agent> Agents { get; set; }
     }
 }
