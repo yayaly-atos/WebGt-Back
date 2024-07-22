@@ -1,15 +1,17 @@
 ﻿namespace webapiG2T.Models.Dto
 {
-    public class IncidentDto
+ 
+   public class IncidentDto
     {
         public int Id { get; set; }
-        public string Canal { get; set; }
-        public string Motif { get; set; }
-        public string SousMotif { get; set; }
+        public int CanalId { get; set; }
+        public int MotifId { get; set; }
+        public int SousMotifId { get; set; }
         public string Description { get; set; }
-        public string Commentaire { get; set; }
+        public string? Commentaire { get; set; }
         public string StatutIncident { get; set; }
-        public string Entite { get; set; }
-        public ContactDto Contact { get; set; }
+        public int ContactId { get; set; }
+        public int ServiceId { get; set; }
+        public int TeleconseillerId { get; set; }
     }
 }
