@@ -27,7 +27,7 @@ namespace G2T.Data
         public DbSet<Teleconseiller> Teleconseillers { get; set; }
         public DbSet<Utilisateur> Utilisateurs { get; set; }
         public DbSet<EntiteSupport> EntitesSupports { get; set; }
-        public DbSet<RevoquerToken> RevoquerTokens { get; set; }
+        //public DbSet<RevoquerToken> RevoquerTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
