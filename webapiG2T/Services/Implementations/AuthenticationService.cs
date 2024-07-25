@@ -5,6 +5,7 @@ using G2T.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using webapiG2T.Models;
@@ -50,12 +51,15 @@ namespace webapiG2T.Services.Implementations
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                Tuple<string, DateTime>  response = GenerateToken(_configuration["JWT:Secret"], authClaims);
+                Tuple<string, string, DateTime>  response = GenerateToken(_configuration["JWT:Secret"], authClaims);
+
+                await _tokenService.AddToken(response.Item1, response.Item2, response.Item3);
 
                 return new AuthenticationResponse
                 {
-                    token = response.Item1,
-                    expiration = response.Item2
+                    Id = response.Item1,
+                    Token = response.Item2,
+                    Expiration = response.Item3,
                 };
             }
             return null;
@@ -85,6 +89,8 @@ namespace webapiG2T.Services.Implementations
                 UserName = model.Username,
                 Nom = model.Nom,
                 Prenom = model.Prenom,
+                PhoneNumber = model.Telephone,
+                Adresse = model.Adresse
                 //EntiteSupport = entiteEnCharge
             };
 
@@ -103,21 +109,23 @@ namespace webapiG2T.Services.Implementations
             return new RegisterResponse { Status = "Success", Message = "User created successfully!" };
         }
 
-        public static Tuple<string, DateTime>  GenerateToken(string secret, List<Claim> claims)
+        public Tuple<string, string, DateTime>  GenerateToken(string secret, List<Claim> claims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = _configuration["JWT:ValidIssuer"],
+                Audience = _configuration["JWT:ValidAudience"],
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            
+            var jti = token.Id;
             var expiration = token.ValidTo;
             var tokenString = tokenHandler.WriteToken(token);
-            return Tuple.Create(tokenString, expiration);
+            return Tuple.Create(jti, tokenString, expiration);
         }
 
         //public EntiteSupport getEntite(string nom, Boolean responsable)
