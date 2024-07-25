@@ -13,10 +13,16 @@ namespace webapiG2T.Services.Implementations
     public class IncidentService : IIncidentService
     {
         private readonly DataContext _context;
+        private readonly ISousMotifService _sousMotifService;
+        private readonly IMotifService _motifService;
+        private readonly ICanalService _canalService;
 
-        public IncidentService(DataContext context)
+        public IncidentService(DataContext context, ISousMotifService sousMotifService, IMotifService motifService, ICanalService canalService)
         {
             _context = context;
+            _sousMotifService = sousMotifService;
+            _motifService = motifService;
+            _canalService = canalService;
         }
 
         public async Task<IncidentDto> GetIncidentByIDAsync(int incidentId)
@@ -31,7 +37,7 @@ namespace webapiG2T.Services.Implementations
                 .Where(i => i.Id == incidentId)
                 .FirstOrDefaultAsync();
 
-            return MapToIncidentDto(incident);
+            return await MapToIncidentDtoAsync(incident);
         }
 
         public async Task<IncidentDto> GetIncidentByPhoneNumberAndIdAsync(string phoneNumber, int incidentId)
@@ -46,7 +52,7 @@ namespace webapiG2T.Services.Implementations
                 .Where(i => i.Id == incidentId && i.Contact.Telephone == phoneNumber)
                 .FirstOrDefaultAsync();
 
-            return MapToIncidentDto(incident);
+            return await MapToIncidentDtoAsync(incident);
         }
 
         public async Task<List<IncidentDto>> GetIncidentsByPhoneNumberAsync(string phoneNumber)
@@ -61,19 +67,24 @@ namespace webapiG2T.Services.Implementations
                 .Where(i => i.Contact.Telephone == phoneNumber)
                 .ToListAsync();
 
-            return incidents.Select(i => MapToIncidentDto(i)).ToList();
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
         }
-        public async Task<IncidentDto> CreateIncidentAsync(IncidentDto incidentDto)
+
+        public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto)
         {
-            var incident = await MapToIncident(incidentDto);
+            var incident = await MapToIncidentAsync(incidentDto);
             _context.Incidents.Add(incident);
             await _context.SaveChangesAsync();
 
-
-            return MapToIncidentDto(incident);
+            return await MapToIncidentDtoAsync(incident);
         }
 
-        private static IncidentDto MapToIncidentDto(Incident incident)
+        private async Task<IncidentDto> MapToIncidentDtoAsync(Incident incident)
         {
             if (incident == null)
             {
@@ -83,24 +94,22 @@ namespace webapiG2T.Services.Implementations
             return new IncidentDto
             {
                 Id = incident.Id,
-                CanalId = incident.Canal.Id, 
-                MotifId = incident.Motif.Id, 
-                SousMotifId = incident.SousMotif.Id, 
-                Description = incident.Description, 
+                CanalNom = await _canalService.GetCanalNomByIdAsync(incident.Canal.Id),
+                MotifNom = await _motifService.GetMotifNomByIdAsync(incident.Motif.Id),
+                SousMotifNom = await _sousMotifService.GetSousMotifNomByIdAsync(incident.SousMotif.Id),
+                Description = incident.Description,
                 Commentaire = incident.Commentaire,
-                StatutIncident = incident.StatutIncident, 
-                ContactId = incident.Contact.Id, 
-                ServiceId = incident.Service.Id, 
-                TeleconseillerId = incident.Teleconseiller.Id 
+                StatutIncident = incident.StatutIncident,
+                ContactId = incident.Contact.Id,
+                ServiceId = incident.Service.Id,
+                TeleconseillerId = incident.Teleconseiller.Id
             };
         }
-        private  async Task<Incident> MapToIncident(IncidentDto dto)
-        {
-         
 
+        private async Task<Incident> MapToIncidentAsync(CreateIncidentDtocs dto)
+        {
             return new Incident
             {
-
                 Description = dto.Description,
                 Commentaire = dto.Commentaire,
                 StatutIncident = dto.StatutIncident,
@@ -113,5 +122,4 @@ namespace webapiG2T.Services.Implementations
             };
         }
     }
-
 }

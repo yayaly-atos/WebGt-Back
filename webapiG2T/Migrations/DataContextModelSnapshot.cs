@@ -322,7 +322,6 @@ namespace webapiG2T.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Adresse")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -539,17 +538,16 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("webapiG2T.Models.RevoquerToken", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateRevoquer")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsRevoquer")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
