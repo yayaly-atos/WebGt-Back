@@ -50,7 +50,6 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-
         [HttpPost("incident")]
         public async Task<IActionResult> CreateIncident([FromBody] IncidentDto incidentDto)
         {
@@ -63,51 +62,6 @@ namespace webapiG2T.Controllers
             return CreatedAtAction(nameof(GetIncidentById), new { incidentId = createdIncident.Id }, createdIncident);
         }
 
-        [HttpPut("status/{id}")]
-        public async Task<IActionResult> UpdateIncidentStatus(int id, [FromBody] string StatutIncident)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var updatedIncident = await _incidentService.UpdateIncidentStatusAsync(id, StatutIncident);
-            if (updatedIncident == null)
-            {
-                return NotFound("Aucun incident trouvé avec l'ID fourni.");
-            }
-
-            return Ok(updatedIncident);
-        }
-        [HttpPut("comment/{id}")]
-        public async Task<IActionResult> UpdateIncidentComment(int id, [FromBody] string commentaire)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var updatedIncident = await _incidentService.UpdateIncidentCommentAsync(id, commentaire);
-            if (updatedIncident == null)
-            {
-                return NotFound("Aucun incident trouvé avec l'ID fourni.");
-            }
-
-            return Ok(updatedIncident);
-        }
-
-        [HttpPut("escalade/{id}")]
-        public async Task<IActionResult> UpdateEscaladeIncident(int id)
-        {
-          
-
-            var updatedIncident = await _incidentService.UpdateIncidenEscaladetAsync(id);
-            if (updatedIncident == null)
-            {
-                return NotFound("Aucun incident trouvé avec l'ID fourni.");
-            }
-
-            return Ok(updatedIncident);
-        }
     }
 }

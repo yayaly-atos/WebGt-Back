@@ -1,4 +1,6 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Forms;
@@ -28,8 +30,8 @@ namespace webapiG2T.Controllers
             {
                 return Ok(new
                 {
-                    token = response.token,
-                    expiration = response.expiration
+                    token = response.Token,
+                    expiration = response.Expiration
                 });
             }
             return Unauthorized();
@@ -48,6 +50,7 @@ namespace webapiG2T.Controllers
 
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -57,7 +60,7 @@ namespace webapiG2T.Controllers
                 await _tokenService.RevoquerTokenAsync(token);
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status200OK, "Déconnecté(e) avec succès");
         }
     }
 }

@@ -53,11 +53,13 @@ namespace webapiG2T.Services.Implementations
 
                 Tuple<string, string, DateTime>  response = GenerateToken(_configuration["JWT:Secret"], authClaims);
 
+                await _tokenService.AddToken(response.Item1, response.Item2, response.Item3);
+
                 return new AuthenticationResponse
                 {
-                    token = response.Item1,
-                    Id = response.Item2,
-                    expiration = response.Item3,
+                    Id = response.Item1,
+                    Token = response.Item2,
+                    Expiration = response.Item3,
                 };
             }
             return null;
@@ -123,7 +125,7 @@ namespace webapiG2T.Services.Implementations
             var jti = token.Id;
             var expiration = token.ValidTo;
             var tokenString = tokenHandler.WriteToken(token);
-            return Tuple.Create(tokenString, jti, expiration);
+            return Tuple.Create(jti, tokenString, expiration);
         }
 
         //public EntiteSupport getEntite(string nom, Boolean responsable)

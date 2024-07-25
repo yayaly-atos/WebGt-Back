@@ -56,18 +56,30 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
 
         // Custom validation
-            //LifetimeValidator = (notBefore, expires, token, param) =>
-            //{
-            //    if (expires != null)
-            //    {
-            //        if (DateTime.UtcNow > expires) return false;
-            //    }
-                
-            //    var dbContext = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
-            //    var jti = token.Id;
-            //    var exists = dbContext.RevoquerTokens.Any(t => t.Token == jti);
-            //    return !exists;
-            //}
+        LifetimeValidator = (notBefore, expires, token, param) =>
+        {
+            var dbContext = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
+            if (expires != null)
+            {
+                if (DateTime.UtcNow > expires)
+                {
+                    var exist = dbContext.RevoquerTokens.FirstOrDefault(t => t.Id == token.Id && t.IsRevoquer == false);
+                    if (exist != null)
+                    {
+                        exist.IsRevoquer = true;
+                        exist.DateRevoquer = expires.Value;
+                        dbContext.RevoquerTokens.Update(exist);
+                        dbContext.SaveChanges();
+                    }
+                    
+                    return false;
+                }
+            }
+
+            var jti = token.Id;
+            var exists = dbContext.RevoquerTokens.Any(t => t.Id == jti && t.IsRevoquer == true);
+            return !exists;
+        }
 
     };
 });
@@ -75,8 +87,8 @@ builder.Services.AddAuthentication(options =>
 // builder.Services.ConfigureApplicationCookie(op => op.LoginPath = "/UserAuthentication/Login");
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-//builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
-//builder.Services.AddScoped<IIncidentService, IncidentService>();
+builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
+builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 var app = builder.Build();
 
