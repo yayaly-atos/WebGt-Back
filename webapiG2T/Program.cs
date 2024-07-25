@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -94,6 +95,34 @@ builder.Services.AddScoped<ICanalService, CanalService>();
 builder.Services.AddScoped<IMotifService, MotifService>();
 builder.Services.AddScoped<ISousMotifService, SousMotifService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Veuillez entrer le token!",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+             new OpenApiSecurityScheme
+                 {
+                 Reference = new OpenApiReference
+                 {
+                     Type = ReferenceType.SecurityScheme,
+                     Id = "Bearer"
+                 }
+                },
+             new string[] { }
+
+        }
+    });
+});
 
 var app = builder.Build();
 
