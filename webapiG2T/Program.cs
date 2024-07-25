@@ -89,13 +89,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
-<<<<<<< HEAD
+
 builder.Services.AddScoped<ICanalService, CanalService>();
 builder.Services.AddScoped<IMotifService, MotifService>();
 builder.Services.AddScoped<ISousMotifService, SousMotifService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
-=======
->>>>>>> e218ea21996d637bf11e0f49d3605fe0465c208e
 
 var app = builder.Build();
 
