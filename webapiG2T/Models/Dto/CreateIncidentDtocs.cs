@@ -11,6 +11,7 @@
         public string StatutIncident { get; set; }
         public int ContactId { get; set; }
         public int ServiceId { get; set; }
+        public int PrioriteId { get; set; } 
         public int TeleconseillerId { get; set; }
     }
 }

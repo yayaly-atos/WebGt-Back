@@ -28,6 +28,8 @@ namespace G2T.Data
         public DbSet<Utilisateur> Utilisateurs { get; set; }
         public DbSet<EntiteSupport> EntitesSupports { get; set; }
         public DbSet<RevoquerToken> RevoquerTokens { get; set; }
+         public DbSet<Priorite> Priorite { get; set; }
+        public DbSet<Esclade> Esclades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

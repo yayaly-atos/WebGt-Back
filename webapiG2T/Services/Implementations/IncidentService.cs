@@ -30,6 +30,7 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
                 .Include(i => i.Contact)
+                 .Include(i => i.Priorite)
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
@@ -45,6 +46,7 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
                 .Include(i => i.Contact)
+                 .Include(i => i.Priorite)
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
@@ -60,6 +62,7 @@ namespace webapiG2T.Services.Implementations
         {
             var incidents = await _context.Incidents
                 .Include(i => i.Contact)
+                 .Include(i => i.Priorite)
                 .Include(i => i.Canal)
                 .Include(i => i.Motif)
                 .Include(i => i.SousMotif)
@@ -119,6 +122,9 @@ namespace webapiG2T.Services.Implementations
                 StatutIncident = incident.StatutIncident,
                 ContactId = incident.Contact.Id,
                 ServiceId = incident.Service.Id,
+                Disponiblite = incident.Disponiblite,
+                DateEcheance = incident.DateEcheance,
+                PrioriteNom = incident.Priorite.Nom,
                 TeleconseillerId = incident.Teleconseiller.Id
             };
         }
@@ -135,6 +141,7 @@ namespace webapiG2T.Services.Implementations
                 Motif = await _context.Motifs.FindAsync(dto.MotifId),
                 SousMotif = await _context.SousMotifs.FindAsync(dto.SousMotifId),
                 Service = await _context.Services.FindAsync(dto.ServiceId),
+                Priorite= await _context.Priorite.FindAsync(dto.PrioriteId),
                 Teleconseiller = await _context.Teleconseillers.FindAsync(dto.TeleconseillerId)
             };
         }
