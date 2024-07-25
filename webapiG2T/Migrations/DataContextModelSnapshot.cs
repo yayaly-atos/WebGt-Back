@@ -199,11 +199,23 @@ namespace webapiG2T.Migrations
                     b.Property<int>("ContactId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DateEcheance")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Disponiblite")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("EntiteSupportId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MotifId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrioriteId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
@@ -225,7 +237,11 @@ namespace webapiG2T.Migrations
 
                     b.HasIndex("ContactId");
 
+                    b.HasIndex("EntiteSupportId");
+
                     b.HasIndex("MotifId");
+
+                    b.HasIndex("PrioriteId");
 
                     b.HasIndex("ServiceId");
 
@@ -516,6 +532,33 @@ namespace webapiG2T.Migrations
                     b.ToTable("AgentIncident");
                 });
 
+            modelBuilder.Entity("webapiG2T.Models.Esclade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Commentaire")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntiteSupportId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IncidentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntiteSupportId");
+
+                    b.HasIndex("IncidentId");
+
+                    b.ToTable("Esclade");
+                });
+
             modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
                 {
                     b.Property<int>("Id")
@@ -534,6 +577,26 @@ namespace webapiG2T.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Prestataires");
+                });
+
+            modelBuilder.Entity("webapiG2T.Models.Priorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Latence")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Priorite");
                 });
 
             modelBuilder.Entity("webapiG2T.Models.RevoquerToken", b =>
@@ -642,9 +705,19 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("G2T.Models.EntiteSupport", null)
+                        .WithMany("Incidents")
+                        .HasForeignKey("EntiteSupportId");
+
                     b.HasOne("G2T.Models.Motif", "Motif")
                         .WithMany("Incidents")
                         .HasForeignKey("MotifId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("webapiG2T.Models.Priorite", "Priorite")
+                        .WithMany("Incidents")
+                        .HasForeignKey("PrioriteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -671,6 +744,8 @@ namespace webapiG2T.Migrations
                     b.Navigation("Contact");
 
                     b.Navigation("Motif");
+
+                    b.Navigation("Priorite");
 
                     b.Navigation("Service");
 
@@ -721,6 +796,25 @@ namespace webapiG2T.Migrations
                     b.Navigation("Incident");
                 });
 
+            modelBuilder.Entity("webapiG2T.Models.Esclade", b =>
+                {
+                    b.HasOne("G2T.Models.EntiteSupport", "EntiteSupport")
+                        .WithMany()
+                        .HasForeignKey("EntiteSupportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("G2T.Models.Incident", "Incident")
+                        .WithMany("Esclades")
+                        .HasForeignKey("IncidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EntiteSupport");
+
+                    b.Navigation("Incident");
+                });
+
             modelBuilder.Entity("webapiG2T.Models.Teleconseiller", b =>
                 {
                     b.HasOne("webapiG2T.Models.Prestataire", "Prestataire")
@@ -763,11 +857,15 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.EntiteSupport", b =>
                 {
                     b.Navigation("Agents");
+
+                    b.Navigation("Incidents");
                 });
 
             modelBuilder.Entity("G2T.Models.Incident", b =>
                 {
                     b.Navigation("AgentIncidents");
+
+                    b.Navigation("Esclades");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>
@@ -790,6 +888,11 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.TypeService", b =>
                 {
                     b.Navigation("Services");
+                });
+
+            modelBuilder.Entity("webapiG2T.Models.Priorite", b =>
+                {
+                    b.Navigation("Incidents");
                 });
 
             modelBuilder.Entity("webapiG2T.Models.Teleconseiller", b =>

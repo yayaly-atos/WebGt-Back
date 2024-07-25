@@ -1,5 +1,6 @@
 ﻿using G2T.Data;
 using G2T.Models;
+using G2T.Models.enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,22 @@ namespace webapiG2T.Services.Implementations
             await _context.SaveChangesAsync();
 
             return await MapToIncidentDtoAsync(incident);
+        }
+        public async Task<IncidentDto> UpdateIncidentCommentAndStatusAsync(int incidentId, string newComment, String newStatus)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentId);
+
+            if (incident == null)
+            {
+                return null;
+            }
+
+            incident.Commentaire = newComment;
+            incident.StatutIncident = newStatus;
+
+            await _context.SaveChangesAsync();
+
+            return await GetIncidentByIDAsync(incidentId);
         }
 
         private async Task<IncidentDto> MapToIncidentDtoAsync(Incident incident)

@@ -94,6 +94,7 @@ builder.Services.AddScoped<IIncidentService, IncidentService>();
 builder.Services.AddScoped<ICanalService, CanalService>();
 builder.Services.AddScoped<IMotifService, MotifService>();
 builder.Services.AddScoped<ISousMotifService, SousMotifService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddSwaggerGen(options =>

@@ -15,7 +15,13 @@ namespace G2T.Models
         public string StatutIncident { get; set; }
         public Contact Contact { get; set; }
         public Service Service { get; set; }
+        public  Boolean Disponiblite { get; set; }
+        public DateTime? DateEcheance { get; set; }
+        public Priorite Priorite { get; set; }
+
         public ICollection<AgentIncident>? AgentIncidents { get; set; }
         public Teleconseiller Teleconseiller { get; set; }
+
+        public ICollection<Esclade> Esclades { get; set; }
     }
 }

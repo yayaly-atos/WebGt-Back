@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webapiG2T.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreation : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,6 +79,20 @@ namespace webapiG2T.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Prestataires", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Priorite",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Latence = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Priorite", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -383,7 +397,11 @@ namespace webapiG2T.Migrations
                     StatutIncident = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false),
-                    TeleconseillerId = table.Column<int>(type: "int", nullable: false)
+                    Disponiblite = table.Column<bool>(type: "bit", nullable: false),
+                    DateEcheance = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PrioriteId = table.Column<int>(type: "int", nullable: false),
+                    TeleconseillerId = table.Column<int>(type: "int", nullable: false),
+                    EntiteSupportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -401,9 +419,20 @@ namespace webapiG2T.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Incidents_EntitesSupports_EntiteSupportId",
+                        column: x => x.EntiteSupportId,
+                        principalTable: "EntitesSupports",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Incidents_Motifs_MotifId",
                         column: x => x.MotifId,
                         principalTable: "Motifs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Incidents_Priorite_PrioriteId",
+                        column: x => x.PrioriteId,
+                        principalTable: "Priorite",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -452,6 +481,33 @@ namespace webapiG2T.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Esclade",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntiteSupportId = table.Column<int>(type: "int", nullable: false),
+                    IncidentId = table.Column<int>(type: "int", nullable: false),
+                    Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Esclade", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Esclade_EntitesSupports_EntiteSupportId",
+                        column: x => x.EntiteSupportId,
+                        principalTable: "EntitesSupports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Esclade_Incidents_IncidentId",
+                        column: x => x.IncidentId,
+                        principalTable: "Incidents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AgentIncident_IncidentId",
                 table: "AgentIncident",
@@ -473,6 +529,16 @@ namespace webapiG2T.Migrations
                 column: "CompteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Esclade_EntiteSupportId",
+                table: "Esclade",
+                column: "EntiteSupportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Esclade_IncidentId",
+                table: "Esclade",
+                column: "IncidentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Factures_ServiceId",
                 table: "Factures",
                 column: "ServiceId");
@@ -488,9 +554,19 @@ namespace webapiG2T.Migrations
                 column: "ContactId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Incidents_EntiteSupportId",
+                table: "Incidents",
+                column: "EntiteSupportId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Incidents_MotifId",
                 table: "Incidents",
                 column: "MotifId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Incidents_PrioriteId",
+                table: "Incidents",
+                column: "PrioriteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_ServiceId",
@@ -540,6 +616,9 @@ namespace webapiG2T.Migrations
                 name: "AgentIncident");
 
             migrationBuilder.DropTable(
+                name: "Esclade");
+
+            migrationBuilder.DropTable(
                 name: "Factures");
 
             migrationBuilder.DropTable(
@@ -570,16 +649,19 @@ namespace webapiG2T.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "EntitesSupports");
-
-            migrationBuilder.DropTable(
                 name: "Canaux");
 
             migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
+                name: "EntitesSupports");
+
+            migrationBuilder.DropTable(
                 name: "Motifs");
+
+            migrationBuilder.DropTable(
+                name: "Priorite");
 
             migrationBuilder.DropTable(
                 name: "Services");
