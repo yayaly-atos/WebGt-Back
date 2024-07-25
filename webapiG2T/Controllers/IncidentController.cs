@@ -51,7 +51,7 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
         [HttpPost("incident")]
-        public async Task<IActionResult> CreateIncident([FromBody] IncidentDto incidentDto)
+        public async Task<IActionResult> CreateIncident([FromBody] CreateIncidentDtocs incidentDto)
         {
             if (!ModelState.IsValid)
             {

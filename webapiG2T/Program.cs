@@ -35,6 +35,9 @@ builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
+builder.Services.AddScoped<ICanalService, CanalService>();
+builder.Services.AddScoped<IMotifService, MotifService>();
+builder.Services.AddScoped<ISousMotifService, SousMotifService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 var app = builder.Build();
