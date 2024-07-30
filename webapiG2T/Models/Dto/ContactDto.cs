@@ -8,7 +8,7 @@
         public string Prenom { get; set; }
         public string Telephone { get; set; }
         public string Adresse { get; set; }
-        public string StatutContact { get; set; }
+     
         public int CompteId { get; set; }
 
     }

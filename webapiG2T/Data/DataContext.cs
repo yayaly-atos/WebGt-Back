@@ -16,18 +16,20 @@ namespace G2T.Data
         public DbSet<Compte> Comptes { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Service> Services { get; set; }
-        public DbSet<TypeService> TypeServices { get; set; }
+    
         public DbSet<Canal> Canaux { get; set; }
         public DbSet<Motif> Motifs { get; set; }
         public DbSet<SousMotif> SousMotifs { get; set; }
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Facture> Factures { get; set; }
-        public DbSet<Agent> Agents { get; set; }
+     
         public DbSet<Prestataire> Prestataires { get; set; }
-        public DbSet<Teleconseiller> Teleconseillers { get; set; }
+      
         public DbSet<Utilisateur> Utilisateurs { get; set; }
         public DbSet<EntiteSupport> EntitesSupports { get; set; }
         public DbSet<RevoquerToken> RevoquerTokens { get; set; }
+         public DbSet<Sla> Priorite { get; set; }
+     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,16 +61,6 @@ namespace G2T.Data
                 .WithMany(p => p.Factures)
                 .HasForeignKey(p => p.ServiceId);
 
-            modelBuilder.Entity<AgentIncident>()
-                .HasKey(f => new { f.AgentId, f.IncidentId });
-            modelBuilder.Entity<AgentIncident>()
-                .HasOne(p => p.Agent)
-                .WithMany(pc => pc.AgentIncidents)
-                .HasForeignKey(p => p.IncidentId);
-            modelBuilder.Entity<AgentIncident>()
-                .HasOne(p => p.Incident)
-                .WithMany(p => p.AgentIncidents)
-                .HasForeignKey(p => p.IncidentId);
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using G2T.Data;
 using G2T.Models;
+
+using G2T.Models.enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using webapiG2T.Models;
 using webapiG2T.Models.Dto;
+using webapiG2T.Models.enums;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Services.Implementations
@@ -29,11 +31,13 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
                 .Include(i => i.Contact)
+                .Include(I => I.Superviseur)
+                .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
-                .Include(i => i.SousMotif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
                 .Where(i => i.Id == incidentId)
                 .FirstOrDefaultAsync();
 
@@ -44,11 +48,12 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
                 .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
-                .Include(i => i.SousMotif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
                 .Where(i => i.Id == incidentId && i.Contact.Telephone == phoneNumber)
                 .FirstOrDefaultAsync();
 
@@ -59,11 +64,12 @@ namespace webapiG2T.Services.Implementations
         {
             var incidents = await _context.Incidents
                 .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
-                .Include(i => i.SousMotif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
                 .Where(i => i.Contact.Telephone == phoneNumber)
                 .ToListAsync();
 
@@ -84,6 +90,37 @@ namespace webapiG2T.Services.Implementations
             return await MapToIncidentDtoAsync(incident);
         }
 
+        public async Task<IncidentDto> UpdateIncident(int incidentId, CreateIncidentDtocs incidentDto)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentId);
+
+            if (incident == null)
+            {
+                return null;
+            }
+
+            incident.CommentaireCloture = incidentDto.CommentaireCloture;
+            incident.StatutIncident = incidentDto.StatutIncident ;
+            incident.DateResolution = incidentDto.DateResolution;
+            incident.CommentaireAgent = incidentDto.CommentaireAgent;
+            incident.CommentaireTeleconseiller = incidentDto.CommentaireTeleconseiller;
+            incident.CommentaireEscalade=incidentDto.CommentaireEscalade;
+            incident.DateAffectation = incidentDto.DateAffectation;
+            incident.DateRelance = incidentDto.DateRelance;
+            incident.DateEscalade = incidentDto.DateEscalade;
+            incident.Escalade= incidentDto.Escalade;
+            
+
+
+            await _context.SaveChangesAsync();
+
+            return await GetIncidentByIDAsync(incidentId);
+        }
+
+     
+
+
+
         private async Task<IncidentDto> MapToIncidentDtoAsync(Incident incident)
         {
             if (incident == null)
@@ -93,16 +130,31 @@ namespace webapiG2T.Services.Implementations
 
             return new IncidentDto
             {
+
                 Id = incident.Id,
-                CanalNom = await _canalService.GetCanalNomByIdAsync(incident.Canal.Id),
-                MotifNom = await _motifService.GetMotifNomByIdAsync(incident.Motif.Id),
-                SousMotifNom = await _sousMotifService.GetSousMotifNomByIdAsync(incident.SousMotif.Id),
+                NomCanal = incident.Canal?.Nom,
+                sousMotif = incident.sousMotif?.Nom, 
                 Description = incident.Description,
-                Commentaire = incident.Commentaire,
                 StatutIncident = incident.StatutIncident,
+                DateAffectation = incident.DateAffectation,
+                DateCreation = incident.DateCreation,
+                DateEscalade = incident.DateEscalade,
+                DateEcheance = incident.DateEcheance,
+                DateRelance = incident.DateRelance,
+                DateResolution = incident.DateResolution,
+                Escalade = incident.Escalade,
+                AgentId = incident.Agent?.Id, 
+                SuperviseurId = incident.Superviseur?.Id, 
+                TeleconseillerId = incident.Teleconseiller?.Id, 
                 ContactId = incident.Contact.Id,
-                ServiceId = incident.Service.Id,
-                TeleconseillerId = incident.Teleconseiller.Id
+                NomService = incident.Service?.NomService,
+                TypeService = incident.Service?.TypeService,
+                NiveauDurgenceId = incident.NiveauDurgence.Id, 
+                EntiteSupportId = incident.EntiteSupport.Id, 
+                CommentaireEscalade = incident.CommentaireEscalade,
+                CommentaireAgent = incident.CommentaireAgent,
+                CommentaireCloture = incident.CommentaireCloture,
+                CommentaireTeleconseiller = incident.CommentaireTeleconseiller
             };
         }
 
@@ -111,14 +163,28 @@ namespace webapiG2T.Services.Implementations
             return new Incident
             {
                 Description = dto.Description,
-                Commentaire = dto.Commentaire,
                 StatutIncident = dto.StatutIncident,
+                DateAffectation = dto.DateAffectation,
+                DateCreation = dto.DateCreation,
+                DateEscalade = dto.DateEscalade,
+                DateEcheance = dto.DateEcheance,
+                DateRelance = dto.DateRelance,
+                DateResolution = dto.DateResolution,
+                Escalade = dto.Escalade,
+                CommentaireEscalade = dto.CommentaireEscalade,
+                CommentaireAgent = dto.CommentaireAgent,
+                CommentaireCloture = dto.CommentaireCloture,
+                CommentaireTeleconseiller = dto.CommentaireTeleconseiller,
                 Contact = await _context.Contacts.FindAsync(dto.ContactId),
                 Canal = await _context.Canaux.FindAsync(dto.CanalId),
-                Motif = await _context.Motifs.FindAsync(dto.MotifId),
-                SousMotif = await _context.SousMotifs.FindAsync(dto.SousMotifId),
+                sousMotif = await _context.SousMotifs.FindAsync(dto.MotifId),
+       
                 Service = await _context.Services.FindAsync(dto.ServiceId),
-                Teleconseiller = await _context.Teleconseillers.FindAsync(dto.TeleconseillerId)
+                NiveauDurgence = await _context.Priorite.FindAsync(dto.NiveauDurgenceId),
+                EntiteSupport = await _context.EntitesSupports.FindAsync(dto.EntiteSupportId),
+                Agent = dto.AgentId != null ? await _context.Utilisateurs.FindAsync(dto.AgentId) : null,
+                Superviseur = await _context.Utilisateurs.FindAsync(dto.SuperviseurId),
+                Teleconseiller = await _context.Utilisateurs.FindAsync(dto.TeleconseillerId)
             };
         }
     }

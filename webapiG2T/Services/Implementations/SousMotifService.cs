@@ -1,6 +1,7 @@
 ﻿using G2T.Data;
 using G2T.Models;
 using Microsoft.EntityFrameworkCore;
+using webapiG2T.Models.Dto;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Services.Implementations
@@ -22,6 +23,38 @@ namespace webapiG2T.Services.Implementations
         public async Task<List<SousMotif>> GetAllSousMotifsAsync()
         {
             return await _context.SousMotifs.ToListAsync();
+        }
+
+        public async Task<SousMotif> CreateSousMotifAsync(SousMotifDto newSousMotif)
+        {
+            var sousMotif = new SousMotif
+            {
+                Nom = newSousMotif.Nom,
+                MotifId = newSousMotif.MotifId
+            };
+
+            _context.SousMotifs.Add(sousMotif);
+            await _context.SaveChangesAsync();
+
+            return sousMotif;
+        }
+
+        public async Task<bool> UpdateSousMotifAsync(SousMotifDto updatedSousMotif)
+        {
+            var sousMotif = await _context.SousMotifs
+                                          .SingleOrDefaultAsync(sm => sm.Nom == updatedSousMotif.Nom);
+            if (sousMotif == null)
+            {
+                return false;
+            }
+
+          
+            _context.Entry(sousMotif).CurrentValues.SetValues(updatedSousMotif);
+
+          
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

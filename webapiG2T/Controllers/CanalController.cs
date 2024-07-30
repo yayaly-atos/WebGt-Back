@@ -32,5 +32,34 @@ namespace webapiG2T.Controllers
             var canaux = await _canalService.GetAllCanauxAsync();
             return Ok(canaux);
         }
+        [HttpPost]
+        public async Task<ActionResult<Canal>> CreateCanal([FromBody] Canal newCanal)
+        {
+            if (newCanal == null)
+            {
+                return BadRequest("Canal cannot be null.");
+            }
+
+            var createdCanal = await _canalService.CreateCanalAsync(newCanal);
+            return CreatedAtAction(nameof(GetCanalNom), new { id = createdCanal.Id }, createdCanal);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCanal(int id, [FromBody] Canal updatedCanal)
+        {
+            if (id != updatedCanal.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            var result = await _canalService.UpdateCanalAsync(updatedCanal);
+
+            if (result)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
     }
 }
