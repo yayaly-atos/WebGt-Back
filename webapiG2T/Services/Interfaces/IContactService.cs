@@ -6,5 +6,6 @@ namespace webapiG2T.Services.Interfaces
     public interface IContactService
     {
         Task<ContactDto> GetContactByPhoneNumberAsync(string phoneNumber);
+
     }
 }

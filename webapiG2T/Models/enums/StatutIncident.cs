@@ -3,7 +3,7 @@
     public enum StatutIncident
     {
         nouveau,
-        prise_en_charge,
+        encours,
         resolu,
         en_suspend
     }

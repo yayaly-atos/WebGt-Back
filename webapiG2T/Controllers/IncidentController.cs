@@ -63,9 +63,9 @@ namespace webapiG2T.Controllers
         }
 
         [HttpPut("changeStatsus/{id}")]
-        public async Task<ActionResult<IncidentDto>> UpdateIncidentCommentAndStatus(int id, [FromBody] UpdateIncidentCommentStatusDto dto)
+        public async Task<ActionResult<IncidentDto>> UpdateIncidentCommentAndStatus(int id, [FromBody] CreateIncidentDtocs dto)
         {
-            var updatedIncident = await _incidentService.UpdateIncidentCommentAndStatusAsync(id, dto.NewComment, dto.NewStatus);
+            var updatedIncident = await _incidentService.UpdateIncident(id, dto);
 
             if (updatedIncident == null)
             {
@@ -74,6 +74,8 @@ namespace webapiG2T.Controllers
 
             return Ok(updatedIncident);
         }
+
+      
 
 
     }

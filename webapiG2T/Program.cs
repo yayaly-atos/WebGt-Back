@@ -68,7 +68,6 @@ builder.Services.AddAuthentication(options =>
                     if (exist != null)
                     {
                         exist.IsRevoquer = true;
-                        exist.DateRevoquer = expires.Value;
                         dbContext.RevoquerTokens.Update(exist);
                         dbContext.SaveChanges();
                     }

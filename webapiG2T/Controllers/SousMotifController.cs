@@ -1,5 +1,6 @@
 ﻿using G2T.Models;
 using Microsoft.AspNetCore.Mvc;
+using webapiG2T.Models.Dto;
 using webapiG2T.Services.Implementations;
 using webapiG2T.Services.Interfaces;
 
@@ -33,6 +34,33 @@ namespace webapiG2T.Controllers
         {
             var sousMotifs = await _sousMotifService.GetAllSousMotifsAsync();
             return Ok(sousMotifs);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SousMotif>> CreateSousMotif([FromBody] SousMotifDto newSousMotif)
+        {
+            if (newSousMotif == null)
+            {
+                return BadRequest("SousMotif cannot be null.");
+            }
+
+            var createdSousMotif = await _sousMotifService.CreateSousMotifAsync(newSousMotif);
+            return CreatedAtAction(nameof(GetSousMotifNom), new { id = createdSousMotif.Id }, createdSousMotif);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateSousMotif( [FromBody] SousMotifDto updatedSousMotif)
+        {
+        
+
+            var result = await _sousMotifService.UpdateSousMotifAsync(updatedSousMotif);
+
+            if (result)
+            {
+                return NoContent();
+            }
+
+            return NotFound("verifiez le sous-motif il n'existe pas");
         }
 
     }
