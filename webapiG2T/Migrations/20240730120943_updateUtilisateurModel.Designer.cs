@@ -4,6 +4,7 @@ using G2T.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace webapiG2T.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240730120943_updateUtilisateurModel")]
+    partial class updateUtilisateurModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,9 +378,6 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PrestataireId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -388,8 +388,6 @@ namespace webapiG2T.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PrestataireId");
 
                     b.ToTable("Utilisateur");
                 });
@@ -524,7 +522,15 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Responsable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("utilisateurId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("utilisateurId");
 
                     b.ToTable("Prestataires");
                 });
@@ -683,13 +689,6 @@ namespace webapiG2T.Migrations
                     b.Navigation("Motif");
                 });
 
-            modelBuilder.Entity("G2T.Models.Utilisateur", b =>
-                {
-                    b.HasOne("webapiG2T.Models.Prestataire", null)
-                        .WithMany("Utilisateurs")
-                        .HasForeignKey("PrestataireId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("G2T.Models.Utilisateur", null)
@@ -704,6 +703,15 @@ namespace webapiG2T.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
+                {
+                    b.HasOne("G2T.Models.Utilisateur", "utilisateur")
+                        .WithMany()
+                        .HasForeignKey("utilisateurId");
+
+                    b.Navigation("utilisateur");
                 });
 
             modelBuilder.Entity("G2T.Models.Canal", b =>
@@ -745,11 +753,6 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.SousMotif", b =>
                 {
                     b.Navigation("Incidents");
-                });
-
-            modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
-                {
-                    b.Navigation("Utilisateurs");
                 });
 
             modelBuilder.Entity("webapiG2T.Models.Sla", b =>

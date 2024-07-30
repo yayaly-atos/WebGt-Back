@@ -89,6 +89,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IRevoquerTokenService, RevoquerTokenService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddScoped<ICanalService, CanalService>();
 builder.Services.AddScoped<IMotifService, MotifService>();

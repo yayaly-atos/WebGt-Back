@@ -6,7 +6,7 @@ namespace webapiG2T.Services.Interfaces
     public interface IAuthenticationService
     {
         Task<AuthenticationResponse> Login(LoginModel model);
-        Task<RegisterResponse> Register(RegisterModel model);
+        Task<Response> Register(RegisterModel model);
         Task Logout();
     }
 }

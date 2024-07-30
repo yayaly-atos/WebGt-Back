@@ -11,6 +11,7 @@ using System.Text;
 using webapiG2T.Models;
 using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
+using Response = webapiG2T.Models.Forms.Response;
 
 namespace webapiG2T.Services.Implementations
 {
@@ -42,7 +43,7 @@ namespace webapiG2T.Services.Implementations
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, "prenom:"+user.Prenom+",nom:"+user.Nom),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -65,22 +66,12 @@ namespace webapiG2T.Services.Implementations
             return null;
         }
 
-        public async Task<RegisterResponse> Register(RegisterModel model)
+        public async Task<Response> Register(RegisterModel model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return new RegisterResponse { Status = "Error", Message = "User already exists!" };
+                return new Response { Status = "Error", Message = "User already exists!" };
 
-
-            //var entiteEnCharge = new EntiteSupport();
-            //if(model.Role == "Teleconseiller" || model.Role == "Admin")
-            //{
-            //    entiteEnCharge = null;
-            //}
-            //else
-            //{
-            //    entiteEnCharge = this.getEntite(model.EntiteSupport, model.isResponsable);
-            //}
 
             Utilisateur user = new Utilisateur()
             {
@@ -91,22 +82,18 @@ namespace webapiG2T.Services.Implementations
                 Prenom = model.Prenom,
                 PhoneNumber = model.Telephone,
                 Adresse = model.Adresse
-                //EntiteSupport = entiteEnCharge
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return new RegisterResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." };
-
-            if (!await roleManager.RoleExistsAsync(model.Role))
-                await roleManager.CreateAsync(new IdentityRole(model.Role));
+                return new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." };
 
             if (await roleManager.RoleExistsAsync(model.Role))
             {
                 await userManager.AddToRoleAsync(user, model.Role);
             }
 
-            return new RegisterResponse { Status = "Success", Message = "User created successfully!" };
+            return new Response { Status = "Success", Message = "User created successfully!" };
         }
 
         public Tuple<string, string, DateTime>  GenerateToken(string secret, List<Claim> claims)
@@ -128,11 +115,6 @@ namespace webapiG2T.Services.Implementations
             return Tuple.Create(jti, tokenString, expiration);
         }
 
-        //public EntiteSupport getEntite(string nom, Boolean responsable)
-        //{
-        //    var entite = _context.Entites.FirstOrDefault(e => e.NomEntite == nom && e.ResponsableEntite.Equals(responsable));
-        //    return entite;
-        //}
 
         public async Task Logout()
         {
