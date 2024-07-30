@@ -22,32 +22,6 @@ namespace webapiG2T.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("G2T.Models.Agent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EntiteId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Responsable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UtilisateurId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntiteId");
-
-                    b.HasIndex("UtilisateurId");
-
-                    b.ToTable("Agents");
-                });
-
             modelBuilder.Entity("G2T.Models.Canal", b =>
                 {
                     b.Property<int>("Id")
@@ -190,48 +164,98 @@ namespace webapiG2T.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AgentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("CanalId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Commentaire")
+                    b.Property<string>("CommentaireAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CommentaireCloture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CommentaireEscalade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CommentaireTeleconseiller")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ContactId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DateAffectation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateCreation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEcheance")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEscalade")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateRelance")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateResolution")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MotifId")
+                    b.Property<int>("EntiteSupportId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Escalade")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MotifId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NiveauDurgenceId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SousMotifId")
                         .HasColumnType("int");
 
                     b.Property<string>("StatutIncident")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TeleconseillerId")
+                    b.Property<string>("SuperviseurId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TeleconseillerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("sousMotifId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgentId");
 
                     b.HasIndex("CanalId");
 
                     b.HasIndex("ContactId");
 
+                    b.HasIndex("EntiteSupportId");
+
                     b.HasIndex("MotifId");
+
+                    b.HasIndex("NiveauDurgenceId");
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("SousMotifId");
+                    b.HasIndex("SuperviseurId");
 
                     b.HasIndex("TeleconseillerId");
+
+                    b.HasIndex("sousMotifId");
 
                     b.ToTable("Incidents");
                 });
@@ -269,12 +293,7 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TypeServiceId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TypeServiceId");
 
                     b.ToTable("Services");
                 });
@@ -287,30 +306,18 @@ namespace webapiG2T.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SousMotifs");
-                });
-
-            modelBuilder.Entity("G2T.Models.TypeService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("MotifId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeServices");
+                    b.HasIndex("MotifId");
+
+                    b.ToTable("SousMotifs");
                 });
 
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>
@@ -321,11 +328,17 @@ namespace webapiG2T.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Actif")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Adresse")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Disponiblite")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -494,28 +507,6 @@ namespace webapiG2T.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("webapiG2T.Models.AgentIncident", b =>
-                {
-                    b.Property<int>("AgentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IncidentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Commentaire")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateAffectation")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AgentId", "IncidentId");
-
-                    b.HasIndex("IncidentId");
-
-                    b.ToTable("AgentIncident");
-                });
-
             modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
                 {
                     b.Property<int>("Id")
@@ -531,7 +522,12 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("Responsable")
                         .HasColumnType("bit");
 
+                    b.Property<string>("utilisateurId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("utilisateurId");
 
                     b.ToTable("Prestataires");
                 });
@@ -555,7 +551,7 @@ namespace webapiG2T.Migrations
                     b.ToTable("RevoquerTokens");
                 });
 
-            modelBuilder.Entity("webapiG2T.Models.Teleconseiller", b =>
+            modelBuilder.Entity("webapiG2T.Models.Sla", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -563,39 +559,17 @@ namespace webapiG2T.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("PrestataireId")
-                        .HasColumnType("int");
+                    b.Property<string>("Latence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Responsable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UtilisateurId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PrestataireId");
-
-                    b.HasIndex("UtilisateurId");
-
-                    b.ToTable("Teleconseillers");
-                });
-
-            modelBuilder.Entity("G2T.Models.Agent", b =>
-                {
-                    b.HasOne("G2T.Models.EntiteSupport", "Entite")
-                        .WithMany("Agents")
-                        .HasForeignKey("EntiteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("G2T.Models.Utilisateur", "Utilisateur")
-                        .WithMany()
-                        .HasForeignKey("UtilisateurId");
-
-                    b.Navigation("Entite");
-
-                    b.Navigation("Utilisateur");
+                    b.ToTable("Priorite");
                 });
 
             modelBuilder.Entity("G2T.Models.Contact", b =>
@@ -630,6 +604,10 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.Incident", b =>
                 {
+                    b.HasOne("G2T.Models.Utilisateur", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId");
+
                     b.HasOne("G2T.Models.Canal", "Canal")
                         .WithMany("Incidents")
                         .HasForeignKey("CanalId")
@@ -642,9 +620,19 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.Motif", "Motif")
+                    b.HasOne("G2T.Models.EntiteSupport", "EntiteSupport")
                         .WithMany("Incidents")
-                        .HasForeignKey("MotifId")
+                        .HasForeignKey("EntiteSupportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("G2T.Models.Motif", null)
+                        .WithMany("Incidents")
+                        .HasForeignKey("MotifId");
+
+                    b.HasOne("webapiG2T.Models.Sla", "NiveauDurgence")
+                        .WithMany("Incidents")
+                        .HasForeignKey("NiveauDurgenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -654,36 +642,48 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.SousMotif", "SousMotif")
+                    b.HasOne("G2T.Models.Utilisateur", "Superviseur")
+                        .WithMany()
+                        .HasForeignKey("SuperviseurId");
+
+                    b.HasOne("G2T.Models.Utilisateur", "Teleconseiller")
+                        .WithMany()
+                        .HasForeignKey("TeleconseillerId");
+
+                    b.HasOne("G2T.Models.SousMotif", "sousMotif")
                         .WithMany("Incidents")
-                        .HasForeignKey("SousMotifId")
+                        .HasForeignKey("sousMotifId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("webapiG2T.Models.Teleconseiller", "Teleconseiller")
-                        .WithMany("Incidents")
-                        .HasForeignKey("TeleconseillerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Agent");
 
                     b.Navigation("Canal");
 
                     b.Navigation("Contact");
 
-                    b.Navigation("Motif");
+                    b.Navigation("EntiteSupport");
+
+                    b.Navigation("NiveauDurgence");
 
                     b.Navigation("Service");
 
-                    b.Navigation("SousMotif");
+                    b.Navigation("Superviseur");
 
                     b.Navigation("Teleconseiller");
+
+                    b.Navigation("sousMotif");
                 });
 
-            modelBuilder.Entity("G2T.Models.Service", b =>
+            modelBuilder.Entity("G2T.Models.SousMotif", b =>
                 {
-                    b.HasOne("G2T.Models.TypeService", null)
-                        .WithMany("Services")
-                        .HasForeignKey("TypeServiceId");
+                    b.HasOne("G2T.Models.Motif", "Motif")
+                        .WithMany("SousMotifs")
+                        .HasForeignKey("MotifId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Motif");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -702,45 +702,13 @@ namespace webapiG2T.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("webapiG2T.Models.AgentIncident", b =>
+            modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
                 {
-                    b.HasOne("G2T.Models.Agent", "Agent")
-                        .WithMany("AgentIncidents")
-                        .HasForeignKey("IncidentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("G2T.Models.Incident", "Incident")
-                        .WithMany("AgentIncidents")
-                        .HasForeignKey("IncidentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Agent");
-
-                    b.Navigation("Incident");
-                });
-
-            modelBuilder.Entity("webapiG2T.Models.Teleconseiller", b =>
-                {
-                    b.HasOne("webapiG2T.Models.Prestataire", "Prestataire")
+                    b.HasOne("G2T.Models.Utilisateur", "utilisateur")
                         .WithMany()
-                        .HasForeignKey("PrestataireId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("utilisateurId");
 
-                    b.HasOne("G2T.Models.Utilisateur", "Utilisateur")
-                        .WithMany()
-                        .HasForeignKey("UtilisateurId");
-
-                    b.Navigation("Prestataire");
-
-                    b.Navigation("Utilisateur");
-                });
-
-            modelBuilder.Entity("G2T.Models.Agent", b =>
-                {
-                    b.Navigation("AgentIncidents");
+                    b.Navigation("utilisateur");
                 });
 
             modelBuilder.Entity("G2T.Models.Canal", b =>
@@ -762,17 +730,14 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.EntiteSupport", b =>
                 {
-                    b.Navigation("Agents");
-                });
-
-            modelBuilder.Entity("G2T.Models.Incident", b =>
-                {
-                    b.Navigation("AgentIncidents");
+                    b.Navigation("Incidents");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>
                 {
                     b.Navigation("Incidents");
+
+                    b.Navigation("SousMotifs");
                 });
 
             modelBuilder.Entity("G2T.Models.Service", b =>
@@ -787,12 +752,7 @@ namespace webapiG2T.Migrations
                     b.Navigation("Incidents");
                 });
 
-            modelBuilder.Entity("G2T.Models.TypeService", b =>
-                {
-                    b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("webapiG2T.Models.Teleconseiller", b =>
+            modelBuilder.Entity("webapiG2T.Models.Sla", b =>
                 {
                     b.Navigation("Incidents");
                 });

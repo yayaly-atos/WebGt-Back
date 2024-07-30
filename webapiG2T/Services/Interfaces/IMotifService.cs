@@ -6,5 +6,8 @@ namespace webapiG2T.Services.Interfaces
     {
         Task<string> GetMotifNomByIdAsync(int id);
         Task<List<Motif>> GetAllMotifsAsync();
+        public Task<Motif> CreateMotifAsync(Motif newMotif);
+        Task<bool> UpdateMotifAsync(Motif updatedMotif);
     }
+
 }

@@ -62,6 +62,21 @@ namespace webapiG2T.Controllers
             return CreatedAtAction(nameof(GetIncidentById), new { incidentId = createdIncident.Id }, createdIncident);
         }
 
+        [HttpPut("changeStatsus/{id}")]
+        public async Task<ActionResult<IncidentDto>> UpdateIncidentCommentAndStatus(int id, [FromBody] CreateIncidentDtocs dto)
+        {
+            var updatedIncident = await _incidentService.UpdateIncident(id, dto);
+
+            if (updatedIncident == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedIncident);
+        }
+
+      
+
 
     }
 }

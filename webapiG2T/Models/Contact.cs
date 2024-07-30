@@ -1,5 +1,6 @@
 ﻿using G2T.Models.enums;
 using System.ComponentModel.DataAnnotations;
+using webapiG2T.Models;
 
 namespace G2T.Models
 {

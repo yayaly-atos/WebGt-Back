@@ -23,5 +23,25 @@ namespace webapiG2T.Services.Implementations
         {
             return await _context.Canaux.ToListAsync();
         }
+
+        public async Task<Canal> CreateCanalAsync(Canal newCanal)
+        {
+            _context.Canaux.Add(newCanal);
+            await _context.SaveChangesAsync();
+            return newCanal;
+        }
+
+        public async Task<bool> UpdateCanalAsync(Canal updatedCanal)
+        {
+            var canal = await _context.Canaux.FindAsync(updatedCanal.Id);
+            if (canal == null)
+            {
+                return false;
+            }
+
+            _context.Entry(canal).CurrentValues.SetValues(updatedCanal);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

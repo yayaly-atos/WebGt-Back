@@ -32,5 +32,32 @@ namespace webapiG2T.Controllers
             var motifs = await _motifService.GetAllMotifsAsync();
             return Ok(motifs);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Motif>> CreateMotif([FromBody] Motif newMotif)
+        {
+            if (newMotif == null)
+            {
+                return BadRequest("Motif cannot be null.");
+            }
+
+            var createdMotif = await _motifService.CreateMotifAsync(newMotif);
+            return CreatedAtAction(nameof(GetMotifNom), new { id = createdMotif.Id }, createdMotif);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateMotif( [FromBody] Motif updatedMotif)
+        {
+
+
+            var result = await _motifService.UpdateMotifAsync( updatedMotif);
+
+            if (result)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
     }
 }

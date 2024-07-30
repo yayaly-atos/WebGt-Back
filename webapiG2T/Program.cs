@@ -67,8 +67,7 @@ builder.Services.AddAuthentication(options =>
                     var exist = dbContext.RevoquerTokens.FirstOrDefault(t => t.Id == token.Id && t.IsRevoquer == false);
                     if (exist != null)
                     {
-                        exist.IsRevoquer = true;
-                        exist.DateRevoquer = expires.Value;
+                        exist.IsRevoquer = true; 
                         dbContext.RevoquerTokens.Update(exist);
                         dbContext.SaveChanges();
                     }
@@ -94,6 +93,8 @@ builder.Services.AddScoped<IIncidentService, IncidentService>();
 builder.Services.AddScoped<ICanalService, CanalService>();
 builder.Services.AddScoped<IMotifService, MotifService>();
 builder.Services.AddScoped<ISousMotifService, SousMotifService>();
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddSwaggerGen(options =>

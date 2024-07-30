@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webapiG2T.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreation : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,17 +68,17 @@ namespace webapiG2T.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prestataires",
+                name: "Priorite",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomPrestateur = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Responsable = table.Column<bool>(type: "bit", nullable: false)
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Latence = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prestataires", x => x.Id);
+                    table.PrimaryKey("PK_Priorite", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,29 +125,17 @@ namespace webapiG2T.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SousMotifs",
+                name: "Services",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    NomService = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TypeService = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SousMotifs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TypeServices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TypeServices", x => x.Id);
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +175,8 @@ namespace webapiG2T.Migrations
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prenom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Disponiblite = table.Column<bool>(type: "bit", nullable: false),
+                    Actif = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -232,6 +222,26 @@ namespace webapiG2T.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SousMotifs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MotifId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SousMotifs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SousMotifs_Motifs_MotifId",
+                        column: x => x.MotifId,
+                        principalTable: "Motifs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -247,97 +257,6 @@ namespace webapiG2T.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Services",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NomService = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeService = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeServiceId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Services", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Services_TypeServices_TypeServiceId",
-                        column: x => x.TypeServiceId,
-                        principalTable: "TypeServices",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Agents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UtilisateurId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    EntiteId = table.Column<int>(type: "int", nullable: false),
-                    Responsable = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Agents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Agents_EntitesSupports_EntiteId",
-                        column: x => x.EntiteId,
-                        principalTable: "EntitesSupports",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Agents_Utilisateur_UtilisateurId",
-                        column: x => x.UtilisateurId,
-                        principalTable: "Utilisateur",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Teleconseillers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UtilisateurId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PrestataireId = table.Column<int>(type: "int", nullable: false),
-                    Responsable = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Teleconseillers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Teleconseillers_Prestataires_PrestataireId",
-                        column: x => x.PrestataireId,
-                        principalTable: "Prestataires",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Teleconseillers_Utilisateur_UtilisateurId",
-                        column: x => x.UtilisateurId,
-                        principalTable: "Utilisateur",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_UserLogins_Utilisateur_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Utilisateur",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -370,20 +289,73 @@ namespace webapiG2T.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Prestataires",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    utilisateurId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NomPrestateur = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Responsable = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prestataires", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prestataires_Utilisateur_utilisateurId",
+                        column: x => x.utilisateurId,
+                        principalTable: "Utilisateur",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_UserLogins_Utilisateur_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Utilisateur",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Incidents",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CanalId = table.Column<int>(type: "int", nullable: false),
-                    MotifId = table.Column<int>(type: "int", nullable: false),
-                    SousMotifId = table.Column<int>(type: "int", nullable: false),
+                    sousMotifId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StatutIncident = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateAffectation = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateCreation = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateEscalade = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateEcheance = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateRelance = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateResolution = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Escalade = table.Column<bool>(type: "bit", nullable: false),
+                    AgentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    SuperviseurId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TeleconseillerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ContactId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false),
-                    TeleconseillerId = table.Column<int>(type: "int", nullable: false)
+                    NiveauDurgenceId = table.Column<int>(type: "int", nullable: false),
+                    EntiteSupportId = table.Column<int>(type: "int", nullable: false),
+                    CommentaireEscalade = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentaireAgent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentaireCloture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentaireTeleconseiller = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MotifId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -401,9 +373,20 @@ namespace webapiG2T.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Incidents_EntitesSupports_EntiteSupportId",
+                        column: x => x.EntiteSupportId,
+                        principalTable: "EntitesSupports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Incidents_Motifs_MotifId",
                         column: x => x.MotifId,
                         principalTable: "Motifs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Incidents_Priorite_NiveauDurgenceId",
+                        column: x => x.NiveauDurgenceId,
+                        principalTable: "Priorite",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -413,59 +396,27 @@ namespace webapiG2T.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Incidents_SousMotifs_SousMotifId",
-                        column: x => x.SousMotifId,
+                        name: "FK_Incidents_SousMotifs_sousMotifId",
+                        column: x => x.sousMotifId,
                         principalTable: "SousMotifs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Incidents_Teleconseillers_TeleconseillerId",
+                        name: "FK_Incidents_Utilisateur_AgentId",
+                        column: x => x.AgentId,
+                        principalTable: "Utilisateur",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Incidents_Utilisateur_SuperviseurId",
+                        column: x => x.SuperviseurId,
+                        principalTable: "Utilisateur",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Incidents_Utilisateur_TeleconseillerId",
                         column: x => x.TeleconseillerId,
-                        principalTable: "Teleconseillers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Utilisateur",
+                        principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateTable(
-                name: "AgentIncident",
-                columns: table => new
-                {
-                    AgentId = table.Column<int>(type: "int", nullable: false),
-                    IncidentId = table.Column<int>(type: "int", nullable: false),
-                    DateAffectation = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgentIncident", x => new { x.AgentId, x.IncidentId });
-                    table.ForeignKey(
-                        name: "FK_AgentIncident_Agents_IncidentId",
-                        column: x => x.IncidentId,
-                        principalTable: "Agents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AgentIncident_Incidents_IncidentId",
-                        column: x => x.IncidentId,
-                        principalTable: "Incidents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AgentIncident_IncidentId",
-                table: "AgentIncident",
-                column: "IncidentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agents_EntiteId",
-                table: "Agents",
-                column: "EntiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agents_UtilisateurId",
-                table: "Agents",
-                column: "UtilisateurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_CompteId",
@@ -478,6 +429,11 @@ namespace webapiG2T.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Incidents_AgentId",
+                table: "Incidents",
+                column: "AgentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Incidents_CanalId",
                 table: "Incidents",
                 column: "CanalId");
@@ -488,9 +444,19 @@ namespace webapiG2T.Migrations
                 column: "ContactId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Incidents_EntiteSupportId",
+                table: "Incidents",
+                column: "EntiteSupportId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Incidents_MotifId",
                 table: "Incidents",
                 column: "MotifId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Incidents_NiveauDurgenceId",
+                table: "Incidents",
+                column: "NiveauDurgenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_ServiceId",
@@ -498,9 +464,14 @@ namespace webapiG2T.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incidents_SousMotifId",
+                name: "IX_Incidents_sousMotifId",
                 table: "Incidents",
-                column: "SousMotifId");
+                column: "sousMotifId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Incidents_SuperviseurId",
+                table: "Incidents",
+                column: "SuperviseurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_TeleconseillerId",
@@ -508,19 +479,14 @@ namespace webapiG2T.Migrations
                 column: "TeleconseillerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_TypeServiceId",
-                table: "Services",
-                column: "TypeServiceId");
+                name: "IX_Prestataires_utilisateurId",
+                table: "Prestataires",
+                column: "utilisateurId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Teleconseillers_PrestataireId",
-                table: "Teleconseillers",
-                column: "PrestataireId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Teleconseillers_UtilisateurId",
-                table: "Teleconseillers",
-                column: "UtilisateurId");
+                name: "IX_SousMotifs_MotifId",
+                table: "SousMotifs",
+                column: "MotifId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogins_UserId",
@@ -537,10 +503,13 @@ namespace webapiG2T.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AgentIncident");
+                name: "Factures");
 
             migrationBuilder.DropTable(
-                name: "Factures");
+                name: "Incidents");
+
+            migrationBuilder.DropTable(
+                name: "Prestataires");
 
             migrationBuilder.DropTable(
                 name: "RevoquerTokens");
@@ -561,25 +530,16 @@ namespace webapiG2T.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "Agents");
-
-            migrationBuilder.DropTable(
-                name: "Incidents");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
-
-            migrationBuilder.DropTable(
-                name: "EntitesSupports");
-
-            migrationBuilder.DropTable(
                 name: "Canaux");
 
             migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "Motifs");
+                name: "EntitesSupports");
+
+            migrationBuilder.DropTable(
+                name: "Priorite");
 
             migrationBuilder.DropTable(
                 name: "Services");
@@ -588,19 +548,16 @@ namespace webapiG2T.Migrations
                 name: "SousMotifs");
 
             migrationBuilder.DropTable(
-                name: "Teleconseillers");
+                name: "Utilisateur");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Comptes");
 
             migrationBuilder.DropTable(
-                name: "TypeServices");
-
-            migrationBuilder.DropTable(
-                name: "Prestataires");
-
-            migrationBuilder.DropTable(
-                name: "Utilisateur");
+                name: "Motifs");
         }
     }
 }
