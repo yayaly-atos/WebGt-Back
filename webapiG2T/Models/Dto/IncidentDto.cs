@@ -5,7 +5,7 @@
     {
         public int Id { get; set; }
         public string NomCanal { get; set; }
-        public string NomMotif { get; set; }
+        public String sousMotif { get; set; }
         public string Description { get; set; }
         public string StatutIncident { get; set; }
         public DateTime? DateAffectation { get; set; }
@@ -20,6 +20,7 @@
         public string TeleconseillerId { get; set; }
         public int ContactId { get; set; }
         public  string  NomService { get; set; }
+        public string TypeService { get; set; }
         public int NiveauDurgenceId { get; set; }
         public int EntiteSupportId { get; set; }
         public string? CommentaireEscalade { get; set; }

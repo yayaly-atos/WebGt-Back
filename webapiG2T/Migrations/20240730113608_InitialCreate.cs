@@ -334,7 +334,7 @@ namespace webapiG2T.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CanalId = table.Column<int>(type: "int", nullable: false),
-                    MotifId = table.Column<int>(type: "int", nullable: false),
+                    sousMotifId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StatutIncident = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateAffectation = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -355,7 +355,7 @@ namespace webapiG2T.Migrations
                     CommentaireAgent = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CommentaireCloture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CommentaireTeleconseiller = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SousMotifId = table.Column<int>(type: "int", nullable: true)
+                    MotifId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -382,8 +382,7 @@ namespace webapiG2T.Migrations
                         name: "FK_Incidents_Motifs_MotifId",
                         column: x => x.MotifId,
                         principalTable: "Motifs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Incidents_Priorite_NiveauDurgenceId",
                         column: x => x.NiveauDurgenceId,
@@ -397,10 +396,11 @@ namespace webapiG2T.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Incidents_SousMotifs_SousMotifId",
-                        column: x => x.SousMotifId,
+                        name: "FK_Incidents_SousMotifs_sousMotifId",
+                        column: x => x.sousMotifId,
                         principalTable: "SousMotifs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Incidents_Utilisateur_AgentId",
                         column: x => x.AgentId,
@@ -464,9 +464,9 @@ namespace webapiG2T.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incidents_SousMotifId",
+                name: "IX_Incidents_sousMotifId",
                 table: "Incidents",
-                column: "SousMotifId");
+                column: "sousMotifId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_SuperviseurId",
