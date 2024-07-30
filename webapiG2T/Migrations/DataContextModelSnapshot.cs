@@ -213,16 +213,13 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("Escalade")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MotifId")
+                    b.Property<int?>("MotifId")
                         .HasColumnType("int");
 
                     b.Property<int>("NiveauDurgenceId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SousMotifId")
                         .HasColumnType("int");
 
                     b.Property<string>("StatutIncident")
@@ -234,6 +231,9 @@ namespace webapiG2T.Migrations
 
                     b.Property<string>("TeleconseillerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("sousMotifId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -251,11 +251,11 @@ namespace webapiG2T.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("SousMotifId");
-
                     b.HasIndex("SuperviseurId");
 
                     b.HasIndex("TeleconseillerId");
+
+                    b.HasIndex("sousMotifId");
 
                     b.ToTable("Incidents");
                 });
@@ -626,11 +626,9 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.Motif", "Motif")
+                    b.HasOne("G2T.Models.Motif", null)
                         .WithMany("Incidents")
-                        .HasForeignKey("MotifId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MotifId");
 
                     b.HasOne("webapiG2T.Models.Sla", "NiveauDurgence")
                         .WithMany("Incidents")
@@ -644,10 +642,6 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.SousMotif", null)
-                        .WithMany("Incidents")
-                        .HasForeignKey("SousMotifId");
-
                     b.HasOne("G2T.Models.Utilisateur", "Superviseur")
                         .WithMany()
                         .HasForeignKey("SuperviseurId");
@@ -655,6 +649,12 @@ namespace webapiG2T.Migrations
                     b.HasOne("G2T.Models.Utilisateur", "Teleconseiller")
                         .WithMany()
                         .HasForeignKey("TeleconseillerId");
+
+                    b.HasOne("G2T.Models.SousMotif", "sousMotif")
+                        .WithMany("Incidents")
+                        .HasForeignKey("sousMotifId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Agent");
 
@@ -664,8 +664,6 @@ namespace webapiG2T.Migrations
 
                     b.Navigation("EntiteSupport");
 
-                    b.Navigation("Motif");
-
                     b.Navigation("NiveauDurgence");
 
                     b.Navigation("Service");
@@ -673,6 +671,8 @@ namespace webapiG2T.Migrations
                     b.Navigation("Superviseur");
 
                     b.Navigation("Teleconseiller");
+
+                    b.Navigation("sousMotif");
                 });
 
             modelBuilder.Entity("G2T.Models.SousMotif", b =>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using webapiG2T.Models.Dto;
+using webapiG2T.Models.enums;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Services.Implementations
@@ -33,7 +34,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(I => I.Superviseur)
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -49,7 +50,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Contact)
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -65,7 +66,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Contact)
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
-                .Include(i => i.Motif)
+                .Include(i => i.sousMotif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -131,8 +132,8 @@ namespace webapiG2T.Services.Implementations
             {
 
                 Id = incident.Id,
-                NomCanal = incident.Canal?.Nom, 
-                NomMotif = incident.Motif?.Nom, 
+                NomCanal = incident.Canal?.Nom,
+                sousMotif = incident.sousMotif?.Nom, 
                 Description = incident.Description,
                 StatutIncident = incident.StatutIncident,
                 DateAffectation = incident.DateAffectation,
@@ -146,7 +147,8 @@ namespace webapiG2T.Services.Implementations
                 SuperviseurId = incident.Superviseur?.Id, 
                 TeleconseillerId = incident.Teleconseiller?.Id, 
                 ContactId = incident.Contact.Id,
-                NomService = incident.Service?.NomService,  
+                NomService = incident.Service?.NomService,
+                TypeService = incident.Service?.TypeService,
                 NiveauDurgenceId = incident.NiveauDurgence.Id, 
                 EntiteSupportId = incident.EntiteSupport.Id, 
                 CommentaireEscalade = incident.CommentaireEscalade,
@@ -175,7 +177,7 @@ namespace webapiG2T.Services.Implementations
                 CommentaireTeleconseiller = dto.CommentaireTeleconseiller,
                 Contact = await _context.Contacts.FindAsync(dto.ContactId),
                 Canal = await _context.Canaux.FindAsync(dto.CanalId),
-                Motif = await _context.Motifs.FindAsync(dto.MotifId),
+                sousMotif = await _context.SousMotifs.FindAsync(dto.MotifId),
        
                 Service = await _context.Services.FindAsync(dto.ServiceId),
                 NiveauDurgence = await _context.Priorite.FindAsync(dto.NiveauDurgenceId),

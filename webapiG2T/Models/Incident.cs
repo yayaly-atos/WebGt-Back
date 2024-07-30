@@ -8,7 +8,7 @@ namespace G2T.Models
     {
         public int Id { get; set; }
         public Canal Canal { get; set; }
-        public Motif Motif { get; set; }
+        public SousMotif sousMotif { get; set; }
     
         public string Description { get; set; }
         public string StatutIncident { get; set; }
