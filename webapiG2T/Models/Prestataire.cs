@@ -6,9 +6,7 @@ namespace webapiG2T.Models
 
     {
         public int Id { get; set; }
-        public Utilisateur utilisateur { get; set; }
-
+        public ICollection<Utilisateur> Utilisateurs { get; set; }
         public string NomPrestateur { get; set; }
-        public Boolean Responsable { get; set; }
     }
 }

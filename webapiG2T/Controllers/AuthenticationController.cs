@@ -62,5 +62,6 @@ namespace webapiG2T.Controllers
 
             return StatusCode(StatusCodes.Status200OK, "Déconnecté(e) avec succès");
         }
+
     }
 }
