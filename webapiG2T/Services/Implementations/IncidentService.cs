@@ -90,6 +90,24 @@ namespace webapiG2T.Services.Implementations
             return await MapToIncidentDtoAsync(incident);
         }
 
+        public async Task<Incident> DemandeEscalade(int incidentId)
+        {
+            var incident = await _context.Incidents
+                        .Where(i => i.Id == incidentId)
+                        .FirstOrDefaultAsync();
+            if (incident.Escalade == false)
+            {
+                incident.Escalade = true;
+
+
+                await _context.SaveChangesAsync();
+
+                return  incident;
+            }
+            return null;
+           
+        }
+
         public async Task<IncidentDto> UpdateIncident(int incidentId, CreateIncidentDtocs incidentDto)
         {
             var incident = await _context.Incidents.FindAsync(incidentId);
@@ -117,7 +135,45 @@ namespace webapiG2T.Services.Implementations
             return await GetIncidentByIDAsync(incidentId);
         }
 
-     
+        public async Task<List<IncidentDto>> GetIncidentsByAgent(String idAgent)
+        {
+            var incidents = await _context.Incidents
+                .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
+                .Include(i => i.Canal)
+                .Include(i => i.sousMotif)
+                .Include(i => i.Teleconseiller)
+                .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Nouveau")
+                .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        public async Task<int> GetNumberOfIncidentsByAgent(string idAgent)
+        {
+            var count = await _context.Incidents
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Nouveau")
+                .CountAsync();
+
+            return count;
+        }
+
+        public async Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent)
+        {
+            var count = await _context.Incidents
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Resolu")
+                .CountAsync();
+
+            return count;
+        }
+
 
 
 

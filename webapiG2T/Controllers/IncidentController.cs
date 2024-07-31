@@ -33,7 +33,7 @@ namespace webapiG2T.Controllers
         public async Task<IActionResult> GetIncidentByPhoneNumber(string phoneNumber)
         {
             var incident = await _incidentService.GetIncidentsByPhoneNumberAsync(phoneNumber);
-            if (incident.Count==0)
+            if (incident.Count == 0)
             {
                 return NotFound("Aucun incident trouvé avec le numéro de téléphone fourni.");
             }
@@ -75,8 +75,52 @@ namespace webapiG2T.Controllers
             return Ok(updatedIncident);
         }
 
-      
+        [HttpGet("agent/{idAgent}")]
+        public async Task<IActionResult> GetIncidentByAgent(string idAgent)
+        {
+            var incident = await _incidentService.GetIncidentsByAgent(idAgent);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident trouvé avec l'id  de l'agent fourni.");
+            }
+            return Ok(incident);
+        }
+
+
+
+        [HttpGet("agent/count-incident/{idAgent}")]
+        public async Task<IActionResult> GetIncidentCountByAgent(string idAgent)
+        {
+            var count = await _incidentService.GetNumberOfIncidentsByAgent(idAgent);
+            return Ok(new { Count = count });
+        }
+
+
+
+        [HttpGet("agent/count-incident-resolu/{idAgent}")]
+        public async Task<IActionResult> GetIncidentCountReoluByAgent(string idAgent)
+        {
+            var count = await _incidentService.GetNumberOfIncidentsResoluByAgent(idAgent);
+            return Ok(new { Count = count });
+
+
+
+        }
+
+        [HttpPut("demandeEscalade/{id}")]
+        public async Task<ActionResult<IncidentDto>>  DemandeEscalade(int id)
+        {
+            var updatedIncident = await _incidentService.DemandeEscalade(id);
+
+            if (updatedIncident == null)
+            {
+                return NotFound("l'incident avec l'id n'existe pas ou a ete deja escalade");
+            }
+
+            return Ok(updatedIncident);
+        }
 
 
     }
+
 }
