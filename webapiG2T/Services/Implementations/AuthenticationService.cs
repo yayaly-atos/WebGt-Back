@@ -45,6 +45,7 @@ namespace webapiG2T.Services.Implementations
                 {
                     new Claim(ClaimTypes.GivenName,user.Prenom),
                    new Claim(ClaimTypes.Surname,user.Nom),
+                  
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 

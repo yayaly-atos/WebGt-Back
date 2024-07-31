@@ -44,6 +44,28 @@ namespace webapiG2T.Services.Implementations
             return await MapToIncidentDtoAsync(incident);
         }
 
+        public async Task<List<IncidentDto>> GetIncidentAllAsync()
+        {
+            var incidents = await _context.Incidents
+                .Include(i => i.Contact)
+                .Include(I => I.Superviseur)
+                .Include(i => i.NiveauDurgence)
+                .Include(i => i.Canal)
+                .Include(i => i.sousMotif)
+                .Include(i => i.Teleconseiller)
+                .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
+                .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+
+        }
+
         public async Task<IncidentDto> GetIncidentByPhoneNumberAndIdAsync(string phoneNumber, int incidentId)
         {
             var incident = await _context.Incidents

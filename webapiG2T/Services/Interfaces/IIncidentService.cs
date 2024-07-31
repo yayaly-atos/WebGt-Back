@@ -19,5 +19,6 @@ namespace webapiG2T.Services.Interfaces
         Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent);
 
         Task<Incident> DemandeEscalade(int incidentId);
+        Task<List<IncidentDto>> GetIncidentAllAsync();
     }
 }

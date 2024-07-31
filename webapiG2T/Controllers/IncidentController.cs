@@ -16,8 +16,22 @@ namespace webapiG2T.Controllers
         {
             _incidentService = incidentService;
         }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetInncidentAll()
+        {
+            var incident = await _incidentService.GetIncidentAllAsync();
 
-        [HttpGet("by-phone-and-id/{phoneNumber}/{incidentId}")]
+            if (incident == null)
+            {
+                return NotFound("Aucun incident trouve.");
+            }
+
+            return Ok(incident);
+        }
+
+
+
+            [HttpGet("by-phone-and-id/{phoneNumber}/{incidentId}")]
         public async Task<IActionResult> GetIncidentByPhoneNumberAndId(string phoneNumber, int incidentId)
         {
             var incident = await _incidentService.GetIncidentByPhoneNumberAndIdAsync(phoneNumber, incidentId);
