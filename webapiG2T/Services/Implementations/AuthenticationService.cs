@@ -43,7 +43,9 @@ namespace webapiG2T.Services.Implementations
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "prenom:"+user.Prenom+",nom:"+user.Nom),
+                    new Claim(ClaimTypes.GivenName,user.Prenom),
+                   new Claim(ClaimTypes.Surname,user.Nom),
+                  
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -96,7 +98,7 @@ namespace webapiG2T.Services.Implementations
             return new Response { Status = "Success", Message = "User created successfully!" };
         }
 
-        public Tuple<string, string, DateTime>  GenerateToken(string secret, List<Claim> claims)
+        public Tuple<string, string, DateTime> GenerateToken(string secret, List<Claim> claims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -104,21 +106,25 @@ namespace webapiG2T.Services.Implementations
                 Issuer = _configuration["JWT:ValidIssuer"],
                 Audience = _configuration["JWT:ValidAudience"],
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddMinutes(60), 
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jti = token.Id;
             var expiration = token.ValidTo;
             var tokenString = tokenHandler.WriteToken(token);
+
             return Tuple.Create(jti, tokenString, expiration);
         }
-
 
         public async Task Logout()
         {
             await signInManager.SignOutAsync();
         }
+
+       
+
     }
 }

@@ -15,7 +15,7 @@
         public DateTime? DateResolution { get; set; }
         public bool Escalade { get; set; }
         public string? AgentId { get; set; }
-        public string SuperviseurId { get; set; }
+        public string? SuperviseurId { get; set; }
         public string TeleconseillerId { get; set; }
         public int ContactId { get; set; }
         public int ServiceId { get; set; }

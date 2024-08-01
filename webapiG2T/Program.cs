@@ -96,6 +96,7 @@ builder.Services.AddScoped<IMotifService, MotifService>();
 builder.Services.AddScoped<ISousMotifService, SousMotifService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<ISLaService, SlaService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddSwaggerGen(options =>
@@ -125,6 +126,12 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddCors(options => options.AddDefaultPolicy(
+    policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    }
+));
 
 var app = builder.Build();
 
@@ -132,6 +139,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 }
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
