@@ -32,3 +32,12 @@ Modifiez la chaîne de connexion dans la section ConnectionStrings pour qu'elle 
 "ConnectionStrings": {
   "DefaultConnection": "Server=localhost;Database=YourDatabaseName;User Id=your-username;Password=your-password;"
 }
+## Générer la base de données :
+
+Ouvrez Visual Studio.
+
+Accédez à Outils -> Gestionnaire de package NuGet -> Console du Gestionnaire de package.
+
+Exécutez la commande suivante
+   ```bash
+  update-database
