@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+
 using webapiG2T.Services.Interfaces;
 
 namespace G2T.Controllers
