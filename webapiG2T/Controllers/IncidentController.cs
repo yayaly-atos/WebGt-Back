@@ -29,9 +29,45 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
 
+        [HttpGet("agent-resolu/{idAgent}")]
+        public async Task<IActionResult> GetIncidentResoluByAgent(string idAgent)
+        {
+            var incident = await _incidentService.GetIncidentsResoluByAgeNT(idAgent);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident resolu trouvé avec l'id  de l'agent fourni.");
+            }
+            return Ok(incident);
+        }
 
 
-            [HttpGet("by-phone-and-id/{phoneNumber}/{incidentId}")]
+        [HttpGet("agent-ouvert/{idAgent}")]
+        public async Task<IActionResult> GetIncidentOuvertByAgent(string idAgent)
+        {
+            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(idAgent);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident ouvert trouvé avec l'id  de l'agent fourni.");
+            }
+            return Ok(incident);
+        }
+
+        [HttpGet("agent-nonouvert/{idAgent}")]
+        public async Task<IActionResult> GetIncidentNonOuvertByAgent(string idAgent)
+        {
+            var incident = await _incidentService.GetIncidentsNonOuvertByAgeNT(idAgent);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident non ouvert trouvé avec l'id  de l'agent fourni.");
+            }
+            return Ok(incident);
+        }
+
+
+
+
+
+        [HttpGet("by-phone-and-id/{phoneNumber}/{incidentId}")]
         public async Task<IActionResult> GetIncidentByPhoneNumberAndId(string phoneNumber, int incidentId)
         {
             var incident = await _incidentService.GetIncidentByPhoneNumberAndIdAsync(phoneNumber, incidentId);

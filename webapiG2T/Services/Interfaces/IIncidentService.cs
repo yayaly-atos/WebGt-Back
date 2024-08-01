@@ -14,6 +14,11 @@ namespace webapiG2T.Services.Interfaces
         Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto);
         Task<IncidentDto> UpdateIncident(int incidentId, CreateIncidentDtocs incidentDto);
         Task<List<IncidentDto>> GetIncidentsByAgent(String idAgent);
+        Task<List<IncidentDto>> GetIncidentsResoluByAgeNT(String idAgent);
+
+        Task<List<IncidentDto>> GetIncidentsOuvertByAgeNT(String idAgent);
+
+        Task<List<IncidentDto>> GetIncidentsNonOuvertByAgeNT(String idAgent);
 
         Task<int> GetNumberOfIncidentsByAgent(string idAgent);
         Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent);

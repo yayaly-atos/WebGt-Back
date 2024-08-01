@@ -66,6 +66,70 @@ namespace webapiG2T.Services.Implementations
 
         }
 
+        public async Task<List<IncidentDto>> GetIncidentsResoluByAgeNT(String idAgent)
+        {
+            var incidents = await _context.Incidents
+                .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
+                .Include(i => i.Canal)
+                .Include(i => i.sousMotif)
+                .Include(i => i.Teleconseiller)
+                .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "resolu")
+                .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        public async Task<List<IncidentDto>> GetIncidentsOuvertByAgeNT(String idAgent)
+        {
+            var incidents = await _context.Incidents
+                .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
+                .Include(i => i.Canal)
+                .Include(i => i.sousMotif)
+                .Include(i => i.Teleconseiller)
+                .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "encours")
+                .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        public async Task<List<IncidentDto>> GetIncidentsNonOuvertByAgeNT(String idAgent)
+        {
+            var incidents = await _context.Incidents
+                .Include(i => i.Contact)
+                .Include(i => i.NiveauDurgence)
+                .Include(i => i.Canal)
+                .Include(i => i.sousMotif)
+                .Include(i => i.Teleconseiller)
+                .Include(i => i.Service)
+                .Include(i => i.EntiteSupport)
+                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "nouveau")
+                .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+
         public async Task<IncidentDto> GetIncidentByPhoneNumberAndIdAsync(string phoneNumber, int incidentId)
         {
             var incident = await _context.Incidents
@@ -167,7 +231,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
-                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Nouveau")
+                .Where(i => i.Agent.Id == idAgent)
                 .ToListAsync();
 
             var incidentDtos = new List<IncidentDto>();
