@@ -23,7 +23,7 @@ Ce projet est une API RESTful développée avec ASP.NET Core. L'API fournit des 
 1. **Cloner le dépôt** :
 
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://gitlab.com/projet-ticketing-b2b-webapi/g2tdb.git
 ## Modifier la chaîne de connexion :
 
  **Ouvrez le fichier appsettings.json** :
