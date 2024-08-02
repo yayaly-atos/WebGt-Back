@@ -242,24 +242,8 @@ namespace webapiG2T.Services.Implementations
             return incidentDtos;
         }
 
-        public async Task<int> GetNumberOfIncidentsByAgent(string idAgent)
-        {
-            var count = await _context.Incidents
-                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Nouveau")
-                .CountAsync();
-
-            return count;
-        }
-
-        public async Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent)
-        {
-            var count = await _context.Incidents
-                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Resolu")
-                .CountAsync();
-
-            return count;
-        }
-
+ 
+     
 
 
 

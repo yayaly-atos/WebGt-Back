@@ -138,24 +138,6 @@ namespace webapiG2T.Controllers
 
 
 
-        [HttpGet("agent/count-incident/{idAgent}")]
-        public async Task<IActionResult> GetIncidentCountByAgent(string idAgent)
-        {
-            var count = await _incidentService.GetNumberOfIncidentsByAgent(idAgent);
-            return Ok(new { Count = count });
-        }
-
-
-
-        [HttpGet("agent/count-incident-resolu/{idAgent}")]
-        public async Task<IActionResult> GetIncidentCountReoluByAgent(string idAgent)
-        {
-            var count = await _incidentService.GetNumberOfIncidentsResoluByAgent(idAgent);
-            return Ok(new { Count = count });
-
-
-
-        }
 
         [HttpPut("demandeEscalade/{id}")]
         public async Task<ActionResult<IncidentDto>>  DemandeEscalade(int id)

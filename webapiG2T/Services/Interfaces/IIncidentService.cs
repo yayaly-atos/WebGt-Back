@@ -20,9 +20,6 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<IncidentDto>> GetIncidentsNonOuvertByAgeNT(String idAgent);
 
-        Task<int> GetNumberOfIncidentsByAgent(string idAgent);
-        Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent);
-
         Task<Incident> DemandeEscalade(int incidentId);
         Task<List<IncidentDto>> GetIncidentAllAsync();
     }
