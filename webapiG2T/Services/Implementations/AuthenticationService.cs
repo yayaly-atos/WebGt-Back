@@ -43,9 +43,9 @@ namespace webapiG2T.Services.Implementations
 
                 var authClaims = new List<Claim>
                 {
+                      new Claim("userId", user.Id),
                     new Claim(ClaimTypes.GivenName,user.Prenom),
                    new Claim(ClaimTypes.Surname,user.Nom),
-                  
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -63,6 +63,7 @@ namespace webapiG2T.Services.Implementations
                     Id = response.Item1,
                     Token = response.Item2,
                     Expiration = response.Item3,
+                    UserId = user.Id
                 };
             }
             return null;
