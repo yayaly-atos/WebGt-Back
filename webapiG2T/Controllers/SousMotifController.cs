@@ -1,4 +1,5 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
 using webapiG2T.Services.Implementations;
@@ -6,6 +7,7 @@ using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class SousMotifController:ControllerBase
@@ -35,7 +37,7 @@ namespace webapiG2T.Controllers
             var sousMotifs = await _sousMotifService.GetAllSousMotifsAsync();
             return Ok(sousMotifs);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<SousMotif>> CreateSousMotif([FromBody] SousMotifDto newSousMotif)
         {
@@ -48,6 +50,7 @@ namespace webapiG2T.Controllers
             return CreatedAtAction(nameof(GetSousMotifNom), new { id = createdSousMotif.Id }, createdSousMotif);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateSousMotif( [FromBody] SousMotifDto updatedSousMotif)
         {

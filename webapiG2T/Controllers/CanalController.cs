@@ -1,9 +1,11 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
+  
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class CanalController : ControllerBase
@@ -32,6 +34,7 @@ namespace webapiG2T.Controllers
             var canaux = await _canalService.GetAllCanauxAsync();
             return Ok(canaux);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Canal>> CreateCanal([FromBody] Canal newCanal)
         {
@@ -43,7 +46,7 @@ namespace webapiG2T.Controllers
             var createdCanal = await _canalService.CreateCanalAsync(newCanal);
             return CreatedAtAction(nameof(GetCanalNom), new { id = createdCanal.Id }, createdCanal);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCanal(int id, [FromBody] Canal updatedCanal)
         {

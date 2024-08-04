@@ -1,10 +1,11 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
-
+  
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class MotifController : ControllerBase
@@ -32,7 +33,7 @@ namespace webapiG2T.Controllers
             var motifs = await _motifService.GetAllMotifsAsync();
             return Ok(motifs);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Motif>> CreateMotif([FromBody] Motif newMotif)
         {
@@ -44,7 +45,7 @@ namespace webapiG2T.Controllers
             var createdMotif = await _motifService.CreateMotifAsync(newMotif);
             return CreatedAtAction(nameof(GetMotifNom), new { id = createdMotif.Id }, createdMotif);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateMotif( [FromBody] Motif updatedMotif)
         {

@@ -1,4 +1,5 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
@@ -16,6 +17,7 @@ namespace webapiG2T.Controllers
         {
             _incidentService = incidentService;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetInncidentAll()
         {
@@ -29,6 +31,7 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
 
+        [Authorize(Roles = "Agent")]
         [HttpGet("agent-resolu/{idAgent}")]
         public async Task<IActionResult> GetIncidentResoluByAgent(string idAgent)
         {
@@ -40,7 +43,7 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
 
-
+        [Authorize(Roles = "Agent")]
         [HttpGet("agent-ouvert/{idAgent}")]
         public async Task<IActionResult> GetIncidentOuvertByAgent(string idAgent)
         {
@@ -51,7 +54,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-
+        [Authorize(Roles = "Agent")]
         [HttpGet("agent-nonouvert/{idAgent}")]
         public async Task<IActionResult> GetIncidentNonOuvertByAgent(string idAgent)
         {
@@ -66,7 +69,7 @@ namespace webapiG2T.Controllers
 
 
 
-
+        [Authorize(Roles = "Teleconseiller")]
         [HttpGet("by-phone-and-id/{phoneNumber}/{incidentId}")]
         public async Task<IActionResult> GetIncidentByPhoneNumberAndId(string phoneNumber, int incidentId)
         {
@@ -79,6 +82,7 @@ namespace webapiG2T.Controllers
 
             return Ok(incident);
         }
+        [Authorize(Roles = "Teleconseiller")]
         [HttpGet("phone/{phoneNumber}")]
         public async Task<IActionResult> GetIncidentByPhoneNumber(string phoneNumber)
         {
@@ -89,7 +93,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-
+        [Authorize(Roles = "Teleconseiller")]
         [HttpGet("id/{incidentId}")]
         public async Task<IActionResult> GetIncidentById(int incidentId)
         {
@@ -100,6 +104,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
+        [Authorize(Roles = "Teleconseiller")]
         [HttpPost("incident")]
         public async Task<IActionResult> CreateIncident([FromBody] CreateIncidentDtocs incidentDto)
         {
@@ -111,7 +116,7 @@ namespace webapiG2T.Controllers
             var createdIncident = await _incidentService.CreateIncidentAsync(incidentDto);
             return CreatedAtAction(nameof(GetIncidentById), new { incidentId = createdIncident.Id }, createdIncident);
         }
-
+        [Authorize(Roles = "Teleconseiller,Superviseur,Agent")]
         [HttpPut("changeStatsus/{id}")]
         public async Task<ActionResult<IncidentDto>> UpdateIncidentCommentAndStatus(int id, [FromBody] CreateIncidentDtocs dto)
         {
@@ -125,6 +130,7 @@ namespace webapiG2T.Controllers
             return Ok(updatedIncident);
         }
 
+        [Authorize(Roles = "Agent")]
         [HttpGet("agent/{idAgent}")]
         public async Task<IActionResult> GetIncidentByAgent(string idAgent)
         {
@@ -138,7 +144,7 @@ namespace webapiG2T.Controllers
 
 
 
-
+        [Authorize(Roles = "Agent")]
         [HttpPut("demandeEscalade/{id}")]
         public async Task<ActionResult<IncidentDto>>  DemandeEscalade(int id)
         {

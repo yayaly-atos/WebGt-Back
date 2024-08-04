@@ -1,11 +1,12 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("webapig2t/[controller]")]
     public class SlaController : ControllerBase
