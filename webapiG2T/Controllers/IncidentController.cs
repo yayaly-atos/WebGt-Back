@@ -27,7 +27,7 @@ namespace webapiG2T.Controllers
 
             if (incident == null)
             {
-                return NotFound("Aucun incident trouve.");
+                return NotFound("Aucun incident n'a été trouvé.");
             }
 
             return Ok(incident);
@@ -40,7 +40,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsResoluByAgeNT(idAgent);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident resolu trouvé avec l'id  de l'agent fourni.");
+                return NotFound("Aucun incident résolu n'a été trouvé avec l'identifiant de l'agent fourni.");
             }
             return Ok(incident);
         }
@@ -52,7 +52,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsOuvertByAgeNT(idAgent);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident ouvert trouvé avec l'id  de l'agent fourni.");
+                return NotFound("Aucun incident ouvert n'a été trouvé avec l'identifiant de l'agent fourni.");
             }
             return Ok(incident);
         }
@@ -63,7 +63,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsNonOuvertByAgeNT(idAgent);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident non ouvert trouvé avec l'id  de l'agent fourni.");
+                return NotFound("Aucun incident non ouvert n'a été trouvé avec l'identifiant de l'agent fourni.");
             }
             return Ok(incident);
         }
@@ -79,7 +79,7 @@ namespace webapiG2T.Controllers
 
             if (incident == null)
             {
-                return NotFound("Aucun incident trouvé avec les paramètres fournis.");
+                return NotFound("Aucun incident n'a été trouvé avec les paramètres fournis.");
             }
 
             return Ok(incident);
@@ -91,7 +91,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsByPhoneNumberAsync(phoneNumber);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident trouvé avec le numéro de téléphone fourni.");
+                return NotFound("Aucun incident n'a été trouvé avec le numéro de téléphone fourni.");
             }
             return Ok(incident);
         }
@@ -102,7 +102,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentByIDAsync(incidentId);
             if (incident == null)
             {
-                return NotFound("Aucun incident trouvé avec l'ID fourni.");
+                return NotFound("Aucun incident n'a été trouvé avec l'identifiant fourni.");
             }
             return Ok(incident);
         }
@@ -139,7 +139,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsByAgent(idAgent);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident trouvé avec l'id  de l'agent fourni.");
+                return NotFound("Aucun incident n'a été trouvé avec l'identifiant de l'agent fourni.");
             }
             return Ok(incident);
         }
@@ -166,7 +166,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsBySuperviseur(entiteId);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident trouvé pour l'entite.");
+                return NotFound("Aucun incident n'a été trouvé pour l'entite.");
             }
             return Ok(incident);
         }
@@ -177,7 +177,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsResoluBySuperviseur(entiteId);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident resolu trouvé pour l'entite.");
+                return NotFound("Aucun incident résolu n'a été trouvé pour l'entité.");
             }
             return Ok(incident);
         }
@@ -189,7 +189,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsOuvertBySuperviseur(entiteId);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident resolu trouvé pour l'entite.");
+                return NotFound("Aucun incident résolu n'a été trouvé pour l'entité.");
             }
             return Ok(incident);
         }
@@ -201,7 +201,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsNonOuvertBySuperviseur(entiteId);
             if (incident.Count == 0)
             {
-                return NotFound("\"Aucun incident resolu trouvé pour l'entite.");
+                return NotFound("\"Aucun incident résolu n'a été trouvé pour l'entité.");
             }
             return Ok(incident);
         }

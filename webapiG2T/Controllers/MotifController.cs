@@ -39,7 +39,7 @@ namespace webapiG2T.Controllers
         {
             if (newMotif == null)
             {
-                return BadRequest("Motif cannot be null.");
+                return BadRequest("Le motif ne peut pas être vide.");
             }
 
             var createdMotif = await _motifService.CreateMotifAsync(newMotif);

@@ -187,7 +187,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "l'incident avec l'id n'existe pas."
+                    Message = "L'incident avec l'identifiant n'existe pas."
                 };
             if (incident.Escalade == false)
             {
@@ -201,7 +201,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "la demande de escalade est effectue avec succes."
+                    Message = "la demande de escalade a été effectuée avec succès."
                 };
             }
             else
@@ -209,7 +209,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Incident a ete deja eu une demande de escalade."
+                    Message = "L'incident a été déjà eu une demande de escalade."
                 };
             }
             return null;
@@ -428,7 +428,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Incident non trouvé."
+                    Message = "L'incident non trouvé."
                 };
             }
 
@@ -439,7 +439,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Agent non trouvé."
+                    Message = "L'agent non trouvé."
                 };
             }
 
@@ -464,7 +464,7 @@ namespace webapiG2T.Services.Implementations
             return new Response
             {
                 Status = "Succès",
-                Message = "Incident mis à jour avec succès."
+                Message = "L'incident mis à jour avec succès."
             };
         }
 
@@ -478,7 +478,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Incident non trouvé."
+                    Message = "L'incident non trouvé."
                 };
             }
 
@@ -497,7 +497,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Entité à escalader n'existe pas."
+                    Message = "L'entité à escalader n'existe pas."
                 };
             }
 
@@ -519,7 +519,7 @@ namespace webapiG2T.Services.Implementations
             return new Response
             {
                 Status = "Succès",
-                Message = "Incident escaladé avec succès."
+                Message = "L'incident escaladé avec succès."
             };
         }
 
@@ -532,7 +532,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Incident non trouvé."
+                    Message = "L'incident non trouvé."
                 };
             }
 
@@ -568,7 +568,7 @@ namespace webapiG2T.Services.Implementations
                 return new Response
                 {
                     Status = "Erreur",
-                    Message = "Incident non trouvé."
+                    Message = "L'incident non trouvé."
                 };
             }
 
@@ -591,7 +591,7 @@ namespace webapiG2T.Services.Implementations
             return new Response
             {
                 Status = "Succès",
-                Message = "Incident cloture."
+                Message = "L'incident clôturé."
             };
         }
 

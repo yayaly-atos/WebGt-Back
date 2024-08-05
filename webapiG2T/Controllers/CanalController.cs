@@ -40,7 +40,7 @@ namespace webapiG2T.Controllers
         {
             if (newCanal == null)
             {
-                return BadRequest("Canal cannot be null.");
+                return BadRequest("Le canal ne peut pas être nul.");
             }
 
             var createdCanal = await _canalService.CreateCanalAsync(newCanal);
@@ -52,7 +52,7 @@ namespace webapiG2T.Controllers
         {
             if (id != updatedCanal.Id)
             {
-                return BadRequest("ID mismatch.");
+                return BadRequest("L'identifiant est incompatible");
             }
 
             var result = await _canalService.UpdateCanalAsync(updatedCanal);
