@@ -233,6 +233,33 @@ namespace webapiG2T.Controllers
         }
 
 
+        [Authorize(Roles = "Agent")]
+        [HttpPut("StartResolution/{incidentID}")]
+        public async Task<ActionResult> StartResolutionIncident(int incidentID)
+        {
+            var incident = await _incidentService.StartResolutionIncident(incidentID);
+            if (incident != null)
+
+            {
+                return StatusCode(StatusCodes.Status200OK, incident);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, incident);
+        }
+
+
+        [Authorize(Roles = "Agent")]
+        [HttpPut("EndResolution")]
+        public async Task<ActionResult> EndResolutionIncident([FromBody] EscaladeIncidentModel model)
+        {
+            var incident = await _incidentService.EndResolutionIncident(model.IncidentId,model.Commentaire);
+            if (incident != null)
+
+            {
+                return StatusCode(StatusCodes.Status200OK, incident);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, incident);
+        }
+
 
 
     }

@@ -32,7 +32,9 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<IncidentDto>> GetIncidentsNonOuvertBySuperviseur(int EntiteId);
         Task<Response> TakeIncident(int incidentId, String idAgent);
+          Task<Response> StartResolutionIncident(int incidentID);
         Task<Response> EscaladeIncident(int incidentI, String commentaire);
+        Task<Response> EndResolutionIncident(int incidentID,String commentaire);
 
     }
 }

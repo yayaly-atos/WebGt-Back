@@ -69,11 +69,10 @@ namespace webapiG2T.Services.Implementations
                     Id = response.Item1,
                     Token = response.Item2,
                     Expiration = response.Item3,
-<<<<<<< HEAD
-                    EntiteId=user.EntiteSupportId
-=======
+
+                    EntiteId=user.EntiteSupportId,
+
                     UserId = user.Id
->>>>>>> main
                 };
             }
             return null;
@@ -148,10 +147,6 @@ namespace webapiG2T.Services.Implementations
             await signInManager.SignOutAsync();
         }
 
-<<<<<<< HEAD
-      
-=======
->>>>>>> main
 
 
     }

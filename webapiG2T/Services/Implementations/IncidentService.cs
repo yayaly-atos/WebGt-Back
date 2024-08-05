@@ -523,6 +523,77 @@ namespace webapiG2T.Services.Implementations
             };
         }
 
+       public async Task<Response> StartResolutionIncident(int incidentID)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentID);
+
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "Incident non trouvé."
+                };
+            }
+
+          
+            incident.StatutIncident = "encours";
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+            return new Response
+            {
+                Status = "Succès",
+                Message = "Incident en cours de resolution."
+            };
+
+
+        }
+        public async Task<Response> EndResolutionIncident(int incidentID, String commentaire)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentID);
+
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "Incident non trouvé."
+                };
+            }
+
+
+            incident.StatutIncident = "resolu";
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+            return new Response
+            {
+                Status = "Succès",
+                Message = "Incident cloture."
+            };
+        }
+
 
 
 
