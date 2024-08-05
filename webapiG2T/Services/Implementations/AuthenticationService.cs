@@ -82,7 +82,7 @@ namespace webapiG2T.Services.Implementations
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return new Response { Status = "Error", Message = "User already exists!" };
+                return new Response { Status = "Error", Message = "L'utilisateur existe déjà!" };
 
             if (model.EntiteId.HasValue)
             {
@@ -92,7 +92,7 @@ namespace webapiG2T.Services.Implementations
 
                 if (existingResponsable != null)
                 {
-                    return new Response { Status = "Error", Message = "L'entite est deja assigne a un utulisateur." };
+                    return new Response { Status = "Error", Message = "L'entité est déjà assigné à un responsable." };
                 }
             }
 
@@ -111,14 +111,14 @@ namespace webapiG2T.Services.Implementations
 
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." };
+                return new Response { Status = "Error", Message = "L'échec de la création de l’utilisateur ! Veuillez vérifier les détails de l’utilisateur et réessayer." };
 
             if (await roleManager.RoleExistsAsync(model.Role))
             {
                 await userManager.AddToRoleAsync(user, model.Role);
             }
 
-            return new Response { Status = "Success", Message = "User created successfully!" };
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
         }
 
         public Tuple<string, string, DateTime> GenerateToken(string secret, List<Claim> claims)

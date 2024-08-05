@@ -43,7 +43,7 @@ namespace webapiG2T.Controllers
         {
             if (newSousMotif == null)
             {
-                return BadRequest("SousMotif cannot be null.");
+                return BadRequest("Le sous-motif ne peut pas être vide.");
             }
 
             var createdSousMotif = await _sousMotifService.CreateSousMotifAsync(newSousMotif);
@@ -63,7 +63,7 @@ namespace webapiG2T.Controllers
                 return NoContent();
             }
 
-            return NotFound("verifiez le sous-motif il n'existe pas");
+            return NotFound("Vérifiez le sous-motif, il n'existe plus");
         }
 
     }

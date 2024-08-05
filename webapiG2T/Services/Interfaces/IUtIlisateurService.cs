@@ -5,5 +5,8 @@ namespace webapiG2T.Services.Interfaces
     public interface IUtIlisateurService
     {
         Task<List<UtilisateurDto>> GetUsersAgent();
+        Task<List<UtilisateurDto>> GetUsersTeleconseiller();
+
+        Task<List<UtilisateurDto>> GetUsersSuperviseur();
     }
 }

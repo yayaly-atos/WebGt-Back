@@ -19,7 +19,7 @@ namespace webapiG2T.Controllers
 
    
         [HttpGet]
-        public async Task<ActionResult<List<Sla>>> GetAllCanaux()
+        public async Task<ActionResult<List<Sla>>> GetAllSla()
         {
             var sla = await _slaserice.GetAllSla();
             return Ok(sla);
