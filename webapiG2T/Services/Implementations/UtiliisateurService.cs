@@ -78,7 +78,29 @@ namespace webapiG2T.Services.Implementations
 
             return usersInRole;
         }
+        public async Task<List<UtilisateurDto>> GetAgents()
+        {
+            var usersInRole = await (from user in _context.Users
+                                     join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                     join role in _context.Roles on userRole.RoleId equals role.Id
+                                     where role.Name == "Agent"
+                                     select new UtilisateurDto
+                                     {
+                                         Id = user.Id,
+                                         UserName = user.UserName,
+                                         Email = user.Email,
+                                         Nom = user.Nom,
+                                         Prenom = user.Prenom,
+                                         Adresse = user.Adresse,
+                                         Disponiblite = user.Disponiblite,
+                                         Actif = user.Actif
+                                     }).ToListAsync();
 
-       
+            return usersInRole;
+
+        }
+
+
+
     }
 }

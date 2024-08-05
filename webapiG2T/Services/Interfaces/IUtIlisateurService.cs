@@ -12,5 +12,7 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<UtilisateurDto>> GetUsersSuperviseur();
 
+        Task<List<UtilisateurDto>> GetAgents();
+
     }
 }

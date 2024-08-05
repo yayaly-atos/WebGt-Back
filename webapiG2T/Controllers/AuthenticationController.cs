@@ -52,7 +52,7 @@ namespace webapiG2T.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError, response);
 
         }
-
+      
         [HttpPost]
         [Route("register-teleconseiller")]
         public async Task<IActionResult> RegisterTelecnseiller([FromBody] RegisterModelTeleconseiller model)
