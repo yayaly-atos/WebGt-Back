@@ -120,9 +120,6 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SuperviseurId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("EntitesSupports");
@@ -395,9 +392,7 @@ namespace webapiG2T.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntiteSupportId")
-                        .IsUnique()
-                        .HasFilter("[EntiteSupportId] IS NOT NULL");
+                    b.HasIndex("EntiteSupportId");
 
                     b.HasIndex("PrestataireId");
 
@@ -696,8 +691,8 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>
                 {
                     b.HasOne("G2T.Models.EntiteSupport", "EntiteSupportResponsable")
-                        .WithOne("Superviseur")
-                        .HasForeignKey("G2T.Models.Utilisateur", "EntiteSupportId")
+                        .WithMany("Superviseurs")
+                        .HasForeignKey("EntiteSupportId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("webapiG2T.Models.Prestataire", null)
@@ -744,7 +739,7 @@ namespace webapiG2T.Migrations
                 {
                     b.Navigation("Incidents");
 
-                    b.Navigation("Superviseur");
+                    b.Navigation("Superviseurs");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>

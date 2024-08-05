@@ -84,13 +84,15 @@ namespace webapiG2T.Services.Implementations
             if (userExists != null)
                 return new Response { Status = "Error", Message = "User already exists!" };
 
-            if (model.EntiteId.HasValue)
+            if (model.EntiteId.HasValue && string.Equals(model.Role, "superviseur", StringComparison.OrdinalIgnoreCase))
             {
                 var existingResponsable = await _context.Utilisateurs
-                    .Where(u => u.EntiteSupportId == model.EntiteId.Value)
-                    .FirstOrDefaultAsync();
-
-                if (existingResponsable != null)
+                 .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                 .Join(_context.Roles, ur => ur.ur.RoleId, r => r.Id, (ur, r) => new { ur.u, r })
+                 .Where(x => x.u.EntiteSupportId == model.EntiteId.Value && x.r.Name == "superviseur")
+                 .Select(x => x.u)
+                 .FirstOrDefaultAsync();
+                if (existingResponsable != null )
                 {
                     return new Response { Status = "Error", Message = "L'entite est deja assigne a un utulisateur." };
                 }

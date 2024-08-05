@@ -16,10 +16,10 @@ namespace webapiG2T.Controllers
             _utIlisateurService = utIlisateurService;
            
         }
-        [HttpGet("agents")]
-        public async Task<IActionResult> GetAgents()
+        [HttpGet("agents/{entiteID}")]
+        public async Task<IActionResult> GetAgents(int entiteID)
         {
-            var agents = await _utIlisateurService.GetUsersAgent();
+            var agents = await _utIlisateurService.GetUsersAgent(entiteID);
             if (agents == null || agents.Count == 0)
             {
                 return NotFound(new { Message = "Pas d'agents touves" });

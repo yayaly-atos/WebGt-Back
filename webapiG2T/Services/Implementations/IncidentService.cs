@@ -574,6 +574,7 @@ namespace webapiG2T.Services.Implementations
 
 
             incident.StatutIncident = "resolu";
+            incident.CommentaireCloture = commentaire;
             try
             {
                 await _context.SaveChangesAsync();
