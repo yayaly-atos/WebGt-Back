@@ -106,7 +106,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-        [Authorize(Roles = "Teleconseiller")]
+        
         [HttpPost("incident")]
         public async Task<IActionResult> CreateIncident([FromBody] CreateIncidentDtocs incidentDto)
         {

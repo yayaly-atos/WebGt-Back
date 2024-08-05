@@ -170,7 +170,14 @@ namespace webapiG2T.Services.Implementations
 
         public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto)
         {
+            incidentDto.EntiteSupportId = 1;
+            incidentDto.DateCreation = DateTime.Now;
+            var priorite = await _context.Priorite
+       .Where(p => p.Id == incidentDto.NiveauDurgenceId)
+       .FirstOrDefaultAsync();
+            incidentDto.DateEcheance = DateTime.Now.Add(TimeSpan.Parse(priorite.Latence));
             var incident = await MapToIncidentAsync(incidentDto);
+            
             _context.Incidents.Add(incident);
             await _context.SaveChangesAsync();
 

@@ -78,6 +78,39 @@ namespace webapiG2T.Services.Implementations
             return null;
         }
 
+        public async Task<Response> RegisterPretataire(RegisterModelTeleconseiller model)
+        {
+            var userExists = await userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return new Response { Status = "Error", Message = "L'utilisateur existe déjà!" };
+
+         
+
+
+            Utilisateur user = new Utilisateur()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                Nom = model.Nom,
+                Prenom = model.Prenom,
+                PhoneNumber = model.Telephone,
+                Adresse = model.Adresse,
+                 PrestataireId= model.PrestaireId
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return new Response { Status = "Error", Message = "L'échec de la création de l’utilisateur ! Veuillez vérifier les détails de l’utilisateur et réessayer." };
+
+            if (await roleManager.RoleExistsAsync(model.Role))
+            {
+                await userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
+        }
+
         public async Task<Response> Register(RegisterModel model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
@@ -92,7 +125,7 @@ namespace webapiG2T.Services.Implementations
                  .Where(x => x.u.EntiteSupportId == model.EntiteId.Value && x.r.Name == "superviseur")
                  .Select(x => x.u)
                  .FirstOrDefaultAsync();
-                if (existingResponsable != null )
+                if (existingResponsable != null)
                 {
                     return new Response { Status = "Error", Message = "L'entité est déjà assigné à un responsable." };
                 }
@@ -152,4 +185,6 @@ namespace webapiG2T.Services.Implementations
 
 
     }
+
+
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using webapiG2T.Models;
 
 namespace G2T.Models
 {
@@ -14,6 +15,14 @@ namespace G2T.Models
 
         public int? EntiteSupportId { get; set; }
         public EntiteSupport? EntiteSupportResponsable { get; set; }
+
+        public int? PrestataireId { get; set; }
+        public Prestataire? Prestataire { get; set; }
+
+
+
+
+
 
     }
 }

@@ -53,6 +53,19 @@ namespace webapiG2T.Controllers
 
         }
 
+        [HttpPost]
+        [Route("register-teleconseiller")]
+        public async Task<IActionResult> RegisterTelecnseiller([FromBody] RegisterModelTeleconseiller model)
+        {
+            var response = await _authService.RegisterPretataire(model);
+            if (response != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
+
+        }
+
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

@@ -20,9 +20,18 @@ namespace webapiG2T.Services.Implementations
             var sousMotif = await _context.SousMotifs.FindAsync(id);
             return sousMotif?.Nom;
         }
-        public async Task<List<SousMotif>> GetAllSousMotifsAsync()
+        public async Task<List<SousMotifDtoReturn>> GetAllSousMotifsAsync()
         {
-            return await _context.SousMotifs.ToListAsync();
+            var sousMotifs = await _context.SousMotifs
+       .Include(sm => sm.Motif) 
+       .ToListAsync();
+            var sousMotifsDto = sousMotifs.Select(sm => new SousMotifDtoReturn
+            {
+                Nom = sm.Nom,
+                MotifNom = sm.Motif.Nom 
+            }).ToList();
+
+            return sousMotifsDto;
         }
 
         public async Task<SousMotif> CreateSousMotifAsync(SousMotifDto newSousMotif)

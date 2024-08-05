@@ -11,7 +11,10 @@ namespace webapiG2T.Services.Interfaces
     {
         Task<AuthenticationResponse> Login(LoginModel model);
         Task<Response> Register(RegisterModel model);
+
+        Task<Response> RegisterPretataire(RegisterModelTeleconseiller model);
         Task Logout();
+
 
        
 

@@ -16,7 +16,7 @@ namespace webapiG2T.Services.Implementations
             _context = context;
         }
 
-        public async Task<List<UtilisateurDto>> GetUsersAgent(int entiteID)
+        public async Task<List<UtilisateurDto>> GetUsersAgentByEntite(int entiteID)
         {
             var usersInRole = await (from user in _context.Users
                                      join userRole in _context.UserRoles on user.Id equals userRole.UserId
@@ -78,5 +78,7 @@ namespace webapiG2T.Services.Implementations
 
             return usersInRole;
         }
+
+       
     }
 }

@@ -20,7 +20,7 @@
         public int ContactId { get; set; }
         public int ServiceId { get; set; }
         public int NiveauDurgenceId { get; set; }
-        public int EntiteSupportId { get; set; }
+        public int? EntiteSupportId { get; set; }
         public string? CommentaireEscalade { get; set; }
         public string? CommentaireAgent { get; set; }
         public string? CommentaireCloture { get; set; }

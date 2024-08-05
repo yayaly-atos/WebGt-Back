@@ -695,11 +695,13 @@ namespace webapiG2T.Migrations
                         .HasForeignKey("EntiteSupportId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("webapiG2T.Models.Prestataire", null)
+                    b.HasOne("webapiG2T.Models.Prestataire", "Prestataire")
                         .WithMany("Utilisateurs")
                         .HasForeignKey("PrestataireId");
 
                     b.Navigation("EntiteSupportResponsable");
+
+                    b.Navigation("Prestataire");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>

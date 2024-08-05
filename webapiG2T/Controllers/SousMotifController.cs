@@ -32,7 +32,7 @@ namespace webapiG2T.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SousMotif>>> GetAllSousMotifs()
+        public async Task<ActionResult<List<SousMotifDtoReturn>>> GetAllSousMotifs()
         {
             var sousMotifs = await _sousMotifService.GetAllSousMotifsAsync();
             return Ok(sousMotifs);
