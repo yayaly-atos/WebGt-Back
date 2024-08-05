@@ -120,6 +120,9 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SuperviseurId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("EntitesSupports");
@@ -346,6 +349,9 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("EntiteSupportId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -388,6 +394,10 @@ namespace webapiG2T.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntiteSupportId")
+                        .IsUnique()
+                        .HasFilter("[EntiteSupportId] IS NOT NULL");
 
                     b.HasIndex("PrestataireId");
 
@@ -685,9 +695,16 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>
                 {
+                    b.HasOne("G2T.Models.EntiteSupport", "EntiteSupportResponsable")
+                        .WithOne("Superviseur")
+                        .HasForeignKey("G2T.Models.Utilisateur", "EntiteSupportId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("webapiG2T.Models.Prestataire", null)
                         .WithMany("Utilisateurs")
                         .HasForeignKey("PrestataireId");
+
+                    b.Navigation("EntiteSupportResponsable");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -726,6 +743,8 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.EntiteSupport", b =>
                 {
                     b.Navigation("Incidents");
+
+                    b.Navigation("Superviseur");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>

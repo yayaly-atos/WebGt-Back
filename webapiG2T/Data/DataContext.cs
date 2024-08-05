@@ -33,6 +33,17 @@ namespace G2T.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Utilisateur>()
+                .HasOne(u => u.EntiteSupportResponsable)
+                .WithOne(e => e.Superviseur)
+                .HasForeignKey<EntiteSupport>(e => e.SuperviseurId)
+                .OnDelete(DeleteBehavior.SetNull); 
+
+            modelBuilder.Entity<EntiteSupport>()
+                .HasOne(e => e.Superviseur)
+                .WithOne(u => u.EntiteSupportResponsable)
+                .HasForeignKey<Utilisateur>(u => u.EntiteSupportId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
             {

@@ -2,6 +2,7 @@
 using G2T.Models.enums;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
+using webapiG2T.Models.Forms;
 
 namespace webapiG2T.Services.Interfaces
 {
@@ -20,7 +21,18 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<IncidentDto>> GetIncidentsNonOuvertByAgeNT(String idAgent);
 
-        Task<Incident> DemandeEscalade(int incidentId);
+        Task<Response> DemandeEscalade(int incidentID, String commentaire);
         Task<List<IncidentDto>> GetIncidentAllAsync();
+
+    
+        Task<List<IncidentDto>> GetIncidentsBySuperviseur(int EntiteId);
+        Task<List<IncidentDto>> GetIncidentsResoluBySuperviseur(int EntiteId);
+
+        Task<List<IncidentDto>> GetIncidentsOuvertBySuperviseur(int EntiteId);
+
+        Task<List<IncidentDto>> GetIncidentsNonOuvertBySuperviseur(int EntiteId);
+        Task<Response> TakeIncident(int incidentId, String idAgent);
+        Task<Response> EscaladeIncident(int incidentI, String commentaire);
+
     }
 }

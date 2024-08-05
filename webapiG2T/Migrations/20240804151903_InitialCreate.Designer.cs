@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace webapiG2T.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240730120943_updateUtilisateurModel")]
-    partial class updateUtilisateurModel
+    [Migration("20240804151903_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,6 +123,9 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SuperviseurId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("EntitesSupports");
@@ -216,16 +219,13 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("Escalade")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MotifId")
+                    b.Property<int?>("MotifId")
                         .HasColumnType("int");
 
                     b.Property<int>("NiveauDurgenceId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SousMotifId")
                         .HasColumnType("int");
 
                     b.Property<string>("StatutIncident")
@@ -237,6 +237,9 @@ namespace webapiG2T.Migrations
 
                     b.Property<string>("TeleconseillerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("sousMotifId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -254,11 +257,11 @@ namespace webapiG2T.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("SousMotifId");
-
                     b.HasIndex("SuperviseurId");
 
                     b.HasIndex("TeleconseillerId");
+
+                    b.HasIndex("sousMotifId");
 
                     b.ToTable("Incidents");
                 });
@@ -349,6 +352,9 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("EntiteSupportId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -378,6 +384,9 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PrestataireId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -388,6 +397,12 @@ namespace webapiG2T.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntiteSupportId")
+                        .IsUnique()
+                        .HasFilter("[EntiteSupportId] IS NOT NULL");
+
+                    b.HasIndex("PrestataireId");
 
                     b.ToTable("Utilisateur");
                 });
@@ -522,15 +537,7 @@ namespace webapiG2T.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Responsable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("utilisateurId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("utilisateurId");
 
                     b.ToTable("Prestataires");
                 });
@@ -629,11 +636,9 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.Motif", "Motif")
+                    b.HasOne("G2T.Models.Motif", null)
                         .WithMany("Incidents")
-                        .HasForeignKey("MotifId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MotifId");
 
                     b.HasOne("webapiG2T.Models.Sla", "NiveauDurgence")
                         .WithMany("Incidents")
@@ -647,10 +652,6 @@ namespace webapiG2T.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("G2T.Models.SousMotif", null)
-                        .WithMany("Incidents")
-                        .HasForeignKey("SousMotifId");
-
                     b.HasOne("G2T.Models.Utilisateur", "Superviseur")
                         .WithMany()
                         .HasForeignKey("SuperviseurId");
@@ -658,6 +659,12 @@ namespace webapiG2T.Migrations
                     b.HasOne("G2T.Models.Utilisateur", "Teleconseiller")
                         .WithMany()
                         .HasForeignKey("TeleconseillerId");
+
+                    b.HasOne("G2T.Models.SousMotif", "sousMotif")
+                        .WithMany("Incidents")
+                        .HasForeignKey("sousMotifId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Agent");
 
@@ -667,8 +674,6 @@ namespace webapiG2T.Migrations
 
                     b.Navigation("EntiteSupport");
 
-                    b.Navigation("Motif");
-
                     b.Navigation("NiveauDurgence");
 
                     b.Navigation("Service");
@@ -676,6 +681,8 @@ namespace webapiG2T.Migrations
                     b.Navigation("Superviseur");
 
                     b.Navigation("Teleconseiller");
+
+                    b.Navigation("sousMotif");
                 });
 
             modelBuilder.Entity("G2T.Models.SousMotif", b =>
@@ -687,6 +694,20 @@ namespace webapiG2T.Migrations
                         .IsRequired();
 
                     b.Navigation("Motif");
+                });
+
+            modelBuilder.Entity("G2T.Models.Utilisateur", b =>
+                {
+                    b.HasOne("G2T.Models.EntiteSupport", "EntiteSupportResponsable")
+                        .WithOne("Superviseur")
+                        .HasForeignKey("G2T.Models.Utilisateur", "EntiteSupportId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("webapiG2T.Models.Prestataire", null)
+                        .WithMany("Utilisateurs")
+                        .HasForeignKey("PrestataireId");
+
+                    b.Navigation("EntiteSupportResponsable");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -703,15 +724,6 @@ namespace webapiG2T.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
-                {
-                    b.HasOne("G2T.Models.Utilisateur", "utilisateur")
-                        .WithMany()
-                        .HasForeignKey("utilisateurId");
-
-                    b.Navigation("utilisateur");
                 });
 
             modelBuilder.Entity("G2T.Models.Canal", b =>
@@ -734,6 +746,8 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.EntiteSupport", b =>
                 {
                     b.Navigation("Incidents");
+
+                    b.Navigation("Superviseur");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>
@@ -753,6 +767,11 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.SousMotif", b =>
                 {
                     b.Navigation("Incidents");
+                });
+
+            modelBuilder.Entity("webapiG2T.Models.Prestataire", b =>
+                {
+                    b.Navigation("Utilisateurs");
                 });
 
             modelBuilder.Entity("webapiG2T.Models.Sla", b =>

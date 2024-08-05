@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using webapiG2T.Models.Forms;
+using webapiG2T.Services.Implementations;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
@@ -65,7 +66,9 @@ namespace webapiG2T.Controllers
             return StatusCode(StatusCodes.Status200OK, "Déconnecté(e) avec succès");
         }
 
-     
+       
+
+
 
     }
 }

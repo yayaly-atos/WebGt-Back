@@ -3,12 +3,14 @@ using Azure.Core;
 using G2T.Data;
 using G2T.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using webapiG2T.Models;
+using webapiG2T.Models.Dto;
 using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
 using Response = webapiG2T.Models.Forms.Response;
@@ -48,6 +50,10 @@ namespace webapiG2T.Services.Implementations
                   
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
+                if (user.EntiteSupportId.HasValue)
+                {
+                    authClaims.Add(new Claim("Entite", user.EntiteSupportId.ToString()));
+                }
 
                 foreach (var userRole in userRoles)
                 {
@@ -63,6 +69,7 @@ namespace webapiG2T.Services.Implementations
                     Id = response.Item1,
                     Token = response.Item2,
                     Expiration = response.Item3,
+                    EntiteId=user.EntiteSupportId
                 };
             }
             return null;
@@ -74,6 +81,18 @@ namespace webapiG2T.Services.Implementations
             if (userExists != null)
                 return new Response { Status = "Error", Message = "User already exists!" };
 
+            if (model.EntiteId.HasValue)
+            {
+                var existingResponsable = await _context.Utilisateurs
+                    .Where(u => u.EntiteSupportId == model.EntiteId.Value)
+                    .FirstOrDefaultAsync();
+
+                if (existingResponsable != null)
+                {
+                    return new Response { Status = "Error", Message = "L'entite est deja assigne a un utulisateur." };
+                }
+            }
+
 
             Utilisateur user = new Utilisateur()
             {
@@ -83,7 +102,8 @@ namespace webapiG2T.Services.Implementations
                 Nom = model.Nom,
                 Prenom = model.Prenom,
                 PhoneNumber = model.Telephone,
-                Adresse = model.Adresse
+                Adresse = model.Adresse,
+                EntiteSupportId = model.EntiteId
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
@@ -124,7 +144,8 @@ namespace webapiG2T.Services.Implementations
             await signInManager.SignOutAsync();
         }
 
-       
+      
+
 
     }
 }

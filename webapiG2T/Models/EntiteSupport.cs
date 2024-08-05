@@ -9,5 +9,9 @@ namespace G2T.Models
         public int Id { get; set; }
         public string NomEntite { get; set; }
         public ICollection<Incident> Incidents { get; set; }
+
+        public string? SuperviseurId { get; set; }
+        public Utilisateur? Superviseur { get; set; }
+
     }
 }

@@ -1,8 +1,10 @@
-﻿using G2T.Models;
+﻿using Azure;
+using G2T.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
+using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
@@ -145,20 +147,98 @@ namespace webapiG2T.Controllers
 
 
         [Authorize(Roles = "Agent")]
-        [HttpPut("demandeEscalade/{id}")]
-        public async Task<ActionResult<IncidentDto>>  DemandeEscalade(int id)
+        [HttpPut("demandeEscalade")]
+        public async Task<ActionResult>  DemandeEscalade([FromBody] EscaladeIncidentModel model)
         {
-            var updatedIncident = await _incidentService.DemandeEscalade(id);
+            var updatedIncident = await _incidentService.DemandeEscalade(model.IncidentId,model.Commentaire);
 
             if (updatedIncident == null)
             {
-                return NotFound("l'incident avec l'id n'existe pas ou a ete deja escalade");
+                return StatusCode(StatusCodes.Status200OK, updatedIncident);
             }
 
-            return Ok(updatedIncident);
+            return StatusCode(StatusCodes.Status500InternalServerError, updatedIncident);
+        }
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur/{entiteId}")]
+        public async Task<IActionResult> GetIncidentBySuperviseur(int entiteId)
+        {
+            var incident = await _incidentService.GetIncidentsBySuperviseur(entiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident trouvé pour l'entite.");
+            }
+            return Ok(incident);
+        }
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur-resolu/{entiteId}")]
+        public async Task<IActionResult> GetIncidentResoluBySuperviseur(int entiteId)
+        {
+            var incident = await _incidentService.GetIncidentsResoluBySuperviseur(entiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident resolu trouvé pour l'entite.");
+            }
+            return Ok(incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur-ouvert/{entiteId}")]
+        public async Task<IActionResult> GetIncidentOuvertBySuperviseur(int entiteId)
+        {
+            var incident = await _incidentService.GetIncidentsOuvertBySuperviseur(entiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident resolu trouvé pour l'entite.");
+            }
+            return Ok(incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur-nonouvert/{entiteId}")]
+        public async Task<IActionResult> GetIncidentNonOuvertBySuperviseur(int entiteId)
+        {
+            var incident = await _incidentService.GetIncidentsNonOuvertBySuperviseur(entiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("\"Aucun incident resolu trouvé pour l'entite.");
+            }
+            return Ok(incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpPut("TakeIncident/{idIncident}/{agentID}")]
+        public async Task<ActionResult> TakeIncident(int idIncident,String agentID)
+        {
+            var incident = await _incidentService.TakeIncident(idIncident, agentID);
+            if (incident != null)
+
+            {
+                return StatusCode(StatusCodes.Status200OK, incident);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpPut("EscaladeIncident")]
+        public async Task<ActionResult> EcaladeIncident([FromBody] EscaladeIncidentModel model)
+        {
+            var incident = await _incidentService.EscaladeIncident(model.IncidentId, model.Commentaire);
+            if (incident != null)
+
+            {
+                return StatusCode(StatusCodes.Status200OK, incident);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, incident);
         }
 
 
+
+
     }
+
+
+
+
 
 }

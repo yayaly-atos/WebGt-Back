@@ -12,5 +12,8 @@ namespace G2T.Models
         public Boolean? Disponiblite { get; set; }
         public Boolean? Actif {  get; set; } = true;
 
+        public int? EntiteSupportId { get; set; }
+        public EntiteSupport? EntiteSupportResponsable { get; set; }
+
     }
 }

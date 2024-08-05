@@ -10,6 +10,7 @@
         public string Password { get; set; }
         public string? Adresse { get; set; }
         public string Role { get; set; }
+        public int? EntiteId { get; set; }
         public Boolean? Disponible { get; set; }
         public Boolean? Actif { get; set; }
     }
