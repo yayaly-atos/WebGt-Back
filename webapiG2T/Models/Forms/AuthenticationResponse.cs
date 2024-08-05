@@ -6,6 +6,7 @@ namespace webapiG2T.Models.Forms
     {
         public string Id { get; set; }
         public string? Token;
+        public string UserId { get; set; }
         public DateTime Expiration;
         public int? EntiteId;
     }

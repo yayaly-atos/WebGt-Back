@@ -35,7 +35,7 @@ namespace webapiG2T.Services.Implementations
             _configuration = configuration;
             _tokenService = tokenService;
         }
-        
+
         public async Task<AuthenticationResponse> Login(LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.Username);
@@ -45,9 +45,9 @@ namespace webapiG2T.Services.Implementations
 
                 var authClaims = new List<Claim>
                 {
+                      new Claim("userId", user.Id),
                     new Claim(ClaimTypes.GivenName,user.Prenom),
                    new Claim(ClaimTypes.Surname,user.Nom),
-                  
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
                 if (user.EntiteSupportId.HasValue)
@@ -60,7 +60,7 @@ namespace webapiG2T.Services.Implementations
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                Tuple<string, string, DateTime>  response = GenerateToken(_configuration["JWT:Secret"], authClaims);
+                Tuple<string, string, DateTime> response = GenerateToken(_configuration["JWT:Secret"], authClaims);
 
                 await _tokenService.AddToken(response.Item1, response.Item2, response.Item3);
 
@@ -69,7 +69,11 @@ namespace webapiG2T.Services.Implementations
                     Id = response.Item1,
                     Token = response.Item2,
                     Expiration = response.Item3,
+<<<<<<< HEAD
                     EntiteId=user.EntiteSupportId
+=======
+                    UserId = user.Id
+>>>>>>> main
                 };
             }
             return null;
@@ -126,7 +130,7 @@ namespace webapiG2T.Services.Implementations
                 Issuer = _configuration["JWT:ValidIssuer"],
                 Audience = _configuration["JWT:ValidAudience"],
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(60), 
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -144,7 +148,10 @@ namespace webapiG2T.Services.Implementations
             await signInManager.SignOutAsync();
         }
 
+<<<<<<< HEAD
       
+=======
+>>>>>>> main
 
 
     }
