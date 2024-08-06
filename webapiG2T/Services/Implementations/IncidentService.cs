@@ -194,8 +194,6 @@ namespace webapiG2T.Services.Implementations
             _context.Historiques.Add(historiqueIncident);
             await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
-
             return await MapToIncidentDtoAsync(incident);
         }
 
@@ -480,12 +478,25 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'agent non trouvé."
                 };
             }
+            String idAgentBefore = incident.Agent.Id ;
 
-         
+
             incident.Agent = agent;
 
             try
             {
+                var historiqueIncident = new HistoriqueIncident
+                {
+                    IncidentId = incident.Id,
+                    Nature = "Création",
+                    ValeurPrecedente = idAgentBefore,
+                    ValeurNouveau = idAgent,
+                    DateHistorique = DateTime.Now,
+                 
+
+                };
+
+                _context.Historiques.Add(historiqueIncident);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -541,6 +552,19 @@ namespace webapiG2T.Services.Implementations
             var CommentBefore = incident.CommentaireEscalade;
             incident.EntiteSupport = entite;
             incident.CommentaireEscalade = commentaire;
+         
+            var historiqueIncident = new HistoriqueIncident
+            {
+                IncidentId = incident.Id,
+                Nature = "Création",
+               ValeurPrecedente= CommentBefore,
+                ValeurNouveau = commentaire,
+                DateHistorique = DateTime.Now,
+                Utilisateur = await _context.Utilisateurs.FindAsync(Id)
+
+            };
+
+             _context.Historiques.Add(historiqueIncident);
             try
             {
                 await _context.SaveChangesAsync();
@@ -553,20 +577,6 @@ namespace webapiG2T.Services.Implementations
                     Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
                 };
             }
-            var historiqueIncident = new HistoriqueIncident
-            {
-                IncidentId = incident.Id,
-                Nature = "Création",
-               ValeurPrecedente= CommentBefore,
-                ValeurNouveau = commentaire,
-                DateHistorique = DateTime.Now,
-                Utilisateur = await _context.Utilisateurs.FindAsync(Id)
-
-            };
-
-            // Ajouter l'historique à la base de données
-            _context.Historiques.Add(historiqueIncident);
-            await _context.SaveChangesAsync();
 
 
             return new Response
@@ -630,6 +640,19 @@ namespace webapiG2T.Services.Implementations
             incident.CommentaireCloture = commentaire;
             try
             {
+                var historiqueIncident = new HistoriqueIncident
+                {
+                    IncidentId = incident.Id,
+                    Nature = "Fin resolution",
+                    ValeurPrecedente = CommentBefore,
+                    ValeurNouveau = commentaire,
+                    DateHistorique = DateTime.Now,
+                    Utilisateur = await _context.Utilisateurs.FindAsync(Id)
+
+                };
+
+
+                _context.Historiques.Add(historiqueIncident);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -640,20 +663,8 @@ namespace webapiG2T.Services.Implementations
                     Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
                 };
             }
-            var historiqueIncident = new HistoriqueIncident
-            {
-                IncidentId = incident.Id,
-                Nature = "Fin resolution",
-                ValeurPrecedente= CommentBefore,
-                ValeurNouveau = commentaire,
-                DateHistorique = DateTime.Now,
-                Utilisateur = await _context.Utilisateurs.FindAsync(Id)
-
-            };
-
-            // Ajouter l'historique à la base de données
-            _context.Historiques.Add(historiqueIncident);
-            await _context.SaveChangesAsync();
+          
+           
 
             return new Response
             {

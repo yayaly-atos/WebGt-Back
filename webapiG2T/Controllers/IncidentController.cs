@@ -147,11 +147,11 @@ namespace webapiG2T.Controllers
         public async Task<IActionResult> GetIncidentByAgent()
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var userId = _authService.DecodeTokenAndGetUserId(token);
-            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(userId);
+            String userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.GetIncidentsByAgent(userId);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident n'a été trouvé avec l'identifiant de l'agent fourni.");
+                return NotFound("Aucun incident n'a été trouvé avec l'identifiant de l'agent fourni."+userId);
             }
             return Ok(incident);
         }
