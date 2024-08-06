@@ -24,7 +24,7 @@ namespace webapiG2T.Services.Implementations
             return new Response
             {
                 Status = "Succès",
-                Message = "L'historique a ete ajoute."
+                Message = "L'historique a été ajouté."
             };
         }
     }
