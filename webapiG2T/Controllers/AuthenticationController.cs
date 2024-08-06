@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using webapiG2T.Models.Forms;
+using webapiG2T.Services.Implementations;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
@@ -38,11 +39,25 @@ namespace webapiG2T.Controllers
             return Unauthorized();
         }
 
+       
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _authService.Register(model);
+            if (response != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
+
+        }
+      
+        [HttpPost]
+        [Route("register-teleconseiller")]
+        public async Task<IActionResult> RegisterTelecnseiller([FromBody] RegisterModelTeleconseiller model)
+        {
+            var response = await _authService.RegisterPretataire(model);
             if (response != null)
             {
                 return StatusCode(StatusCodes.Status200OK, response);
@@ -64,7 +79,9 @@ namespace webapiG2T.Controllers
             return StatusCode(StatusCodes.Status200OK, "Déconnecté(e) avec succès");
         }
 
-     
+       
+
+
 
     }
 }

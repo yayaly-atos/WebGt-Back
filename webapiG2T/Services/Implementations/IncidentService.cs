@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using webapiG2T.Models.Dto;
 using webapiG2T.Models.enums;
+using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Services.Implementations
@@ -169,26 +170,54 @@ namespace webapiG2T.Services.Implementations
 
         public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto)
         {
+            incidentDto.EntiteSupportId = 1;
+            incidentDto.DateCreation = DateTime.Now;
+            var priorite = await _context.Priorite
+       .Where(p => p.Id == incidentDto.NiveauDurgenceId)
+       .FirstOrDefaultAsync();
+            incidentDto.DateEcheance = DateTime.Now.Add(TimeSpan.Parse(priorite.Latence));
             var incident = await MapToIncidentAsync(incidentDto);
+            
             _context.Incidents.Add(incident);
             await _context.SaveChangesAsync();
 
             return await MapToIncidentDtoAsync(incident);
         }
 
-        public async Task<Incident> DemandeEscalade(int incidentId)
+        public async Task<Response> DemandeEscalade(int incidentId, String commentaire  )
         {
             var incident = await _context.Incidents
                         .Where(i => i.Id == incidentId)
                         .FirstOrDefaultAsync();
+
+            if(incident == null)
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident avec l'identifiant n'existe pas."
+                };
             if (incident.Escalade == false)
             {
                 incident.Escalade = true;
+                incident.CommentaireAgent = commentaire;
+                
 
 
                 await _context.SaveChangesAsync();
 
-                return  incident;
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "la demande de escalade a été effectuée avec succès."
+                };
+            }
+            else
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident a été déjà eu une demande de escalade."
+                };
             }
             return null;
            
@@ -242,24 +271,8 @@ namespace webapiG2T.Services.Implementations
             return incidentDtos;
         }
 
-        public async Task<int> GetNumberOfIncidentsByAgent(string idAgent)
-        {
-            var count = await _context.Incidents
-                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Nouveau")
-                .CountAsync();
-
-            return count;
-        }
-
-        public async Task<int> GetNumberOfIncidentsResoluByAgent(string idAgent)
-        {
-            var count = await _context.Incidents
-                .Where(i => i.Agent.Id == idAgent && i.StatutIncident == "Resolu")
-                .CountAsync();
-
-            return count;
-        }
-
+ 
+     
 
 
 
@@ -329,5 +342,268 @@ namespace webapiG2T.Services.Implementations
                 Teleconseiller = await _context.Utilisateurs.FindAsync(dto.TeleconseillerId)
             };
         }
+
+        async Task<List<IncidentDto>>  IIncidentService.GetIncidentsBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+              .Include(i => i.Contact)
+              .Include(i => i.NiveauDurgence)
+              .Include(i => i.Canal)
+              .Include(i => i.sousMotif)
+              .Include(i => i.Teleconseiller)
+              .Include(i => i.Service)
+              .Include(i => i.EntiteSupport)
+              .Where(i => i.EntiteSupport.Id == EntiteId)
+              .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        async Task<List<IncidentDto>> IIncidentService.GetIncidentsResoluBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+               .Include(i => i.Contact)
+               .Include(i => i.NiveauDurgence)
+               .Include(i => i.Canal)
+               .Include(i => i.sousMotif)
+               .Include(i => i.Teleconseiller)
+               .Include(i => i.Service)
+               .Include(i => i.EntiteSupport)
+               .Where(i => i.EntiteSupport.Id == EntiteId && i.StatutIncident == "nouveau")
+               .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        async Task<List<IncidentDto>> IIncidentService.GetIncidentsOuvertBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+               .Include(i => i.Contact)
+               .Include(i => i.NiveauDurgence)
+               .Include(i => i.Canal)
+               .Include(i => i.sousMotif)
+               .Include(i => i.Teleconseiller)
+               .Include(i => i.Service)
+               .Include(i => i.EntiteSupport)
+               .Where(i => i.EntiteSupport.Id == EntiteId && i.StatutIncident == "encours")
+               .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+
+        async Task<List<IncidentDto>> IIncidentService.GetIncidentsNonOuvertBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+               .Include(i => i.Contact)
+               .Include(i => i.NiveauDurgence)
+               .Include(i => i.Canal)
+               .Include(i => i.sousMotif)
+               .Include(i => i.Teleconseiller)
+               .Include(i => i.Service)
+               .Include(i => i.EntiteSupport)
+               .Where(i => i.EntiteSupport.Id == EntiteId && i.StatutIncident == "nouveau")
+               .ToListAsync();
+
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
+        public async Task<Response> TakeIncident(int incidentId, string idAgent)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentId);
+
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident non trouvé."
+                };
+            }
+
+            var agent = await _context.Utilisateurs.FindAsync(idAgent);
+
+            if (agent == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'agent non trouvé."
+                };
+            }
+
+         
+            incident.Agent = agent;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+              
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+           
+            return new Response
+            {
+                Status = "Succès",
+                Message = "L'incident mis à jour avec succès."
+            };
+        }
+
+        public async Task<Response> EscaladeIncident(int incidentI,String commentaire)
+        {
+            var incident = await _context.Incidents
+         .Include(i => i.EntiteSupport)
+         .FirstOrDefaultAsync(i => i.Id == incidentI);
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident non trouvé."
+                };
+            }
+
+            if (incident.EntiteSupport == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident n'a pas d'entité de support associée."
+                };
+            }
+
+            var entite = await _context.EntitesSupports.FindAsync(incident.EntiteSupport.Id + 1);
+            if (entite == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'entité à escalader n'existe pas."
+                };
+            }
+
+            incident.EntiteSupport = entite;
+            incident.CommentaireEscalade = commentaire;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+            return new Response
+            {
+                Status = "Succès",
+                Message = "L'incident escaladé avec succès."
+            };
+        }
+
+       public async Task<Response> StartResolutionIncident(int incidentID)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentID);
+
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident non trouvé."
+                };
+            }
+
+          
+            incident.StatutIncident = "encours";
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+            return new Response
+            {
+                Status = "Succès",
+                Message = "Incident en cours de resolution."
+            };
+
+
+        }
+        public async Task<Response> EndResolutionIncident(int incidentID, String commentaire)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentID);
+
+            if (incident == null)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident non trouvé."
+                };
+            }
+
+
+            incident.StatutIncident = "resolu";
+            incident.CommentaireCloture = commentaire;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
+                };
+            }
+
+            return new Response
+            {
+                Status = "Succès",
+                Message = "L'incident clôturé."
+            };
+        }
+
+
+
+
     }
 }

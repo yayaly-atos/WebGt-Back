@@ -346,6 +346,9 @@ namespace webapiG2T.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("EntiteSupportId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -388,6 +391,8 @@ namespace webapiG2T.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntiteSupportId");
 
                     b.HasIndex("PrestataireId");
 
@@ -685,9 +690,18 @@ namespace webapiG2T.Migrations
 
             modelBuilder.Entity("G2T.Models.Utilisateur", b =>
                 {
-                    b.HasOne("webapiG2T.Models.Prestataire", null)
+                    b.HasOne("G2T.Models.EntiteSupport", "EntiteSupportResponsable")
+                        .WithMany("Superviseurs")
+                        .HasForeignKey("EntiteSupportId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("webapiG2T.Models.Prestataire", "Prestataire")
                         .WithMany("Utilisateurs")
                         .HasForeignKey("PrestataireId");
+
+                    b.Navigation("EntiteSupportResponsable");
+
+                    b.Navigation("Prestataire");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -726,6 +740,8 @@ namespace webapiG2T.Migrations
             modelBuilder.Entity("G2T.Models.EntiteSupport", b =>
                 {
                     b.Navigation("Incidents");
+
+                    b.Navigation("Superviseurs");
                 });
 
             modelBuilder.Entity("G2T.Models.Motif", b =>

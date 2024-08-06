@@ -1,4 +1,5 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
 using webapiG2T.Services.Implementations;
@@ -6,6 +7,7 @@ using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
+    
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class SousMotifController:ControllerBase
@@ -30,24 +32,25 @@ namespace webapiG2T.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SousMotif>>> GetAllSousMotifs()
+        public async Task<ActionResult<List<SousMotifDtoReturn>>> GetAllSousMotifs()
         {
             var sousMotifs = await _sousMotifService.GetAllSousMotifsAsync();
             return Ok(sousMotifs);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<SousMotif>> CreateSousMotif([FromBody] SousMotifDto newSousMotif)
         {
             if (newSousMotif == null)
             {
-                return BadRequest("SousMotif cannot be null.");
+                return BadRequest("Le sous-motif ne peut pas être vide.");
             }
 
             var createdSousMotif = await _sousMotifService.CreateSousMotifAsync(newSousMotif);
             return CreatedAtAction(nameof(GetSousMotifNom), new { id = createdSousMotif.Id }, createdSousMotif);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateSousMotif( [FromBody] SousMotifDto updatedSousMotif)
         {
@@ -60,7 +63,7 @@ namespace webapiG2T.Controllers
                 return NoContent();
             }
 
-            return NotFound("verifiez le sous-motif il n'existe pas");
+            return NotFound("Vérifiez le sous-motif, il n'existe plus");
         }
 
     }

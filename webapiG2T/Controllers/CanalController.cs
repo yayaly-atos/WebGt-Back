@@ -1,9 +1,11 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
+  
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class CanalController : ControllerBase
@@ -32,24 +34,25 @@ namespace webapiG2T.Controllers
             var canaux = await _canalService.GetAllCanauxAsync();
             return Ok(canaux);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Canal>> CreateCanal([FromBody] Canal newCanal)
         {
             if (newCanal == null)
             {
-                return BadRequest("Canal cannot be null.");
+                return BadRequest("Le canal ne peut pas être nul.");
             }
 
             var createdCanal = await _canalService.CreateCanalAsync(newCanal);
             return CreatedAtAction(nameof(GetCanalNom), new { id = createdCanal.Id }, createdCanal);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCanal(int id, [FromBody] Canal updatedCanal)
         {
             if (id != updatedCanal.Id)
             {
-                return BadRequest("ID mismatch.");
+                return BadRequest("L'identifiant est incompatible");
             }
 
             var result = await _canalService.UpdateCanalAsync(updatedCanal);

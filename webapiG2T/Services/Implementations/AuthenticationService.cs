@@ -3,12 +3,14 @@ using Azure.Core;
 using G2T.Data;
 using G2T.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using webapiG2T.Models;
+using webapiG2T.Models.Dto;
 using webapiG2T.Models.Forms;
 using webapiG2T.Services.Interfaces;
 using Response = webapiG2T.Models.Forms.Response;
@@ -33,7 +35,7 @@ namespace webapiG2T.Services.Implementations
             _configuration = configuration;
             _tokenService = tokenService;
         }
-        
+
         public async Task<AuthenticationResponse> Login(LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.Username);
@@ -48,13 +50,17 @@ namespace webapiG2T.Services.Implementations
                    new Claim(ClaimTypes.Surname,user.Nom),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
+                if (user.EntiteSupportId.HasValue)
+                {
+                    authClaims.Add(new Claim("Entite", user.EntiteSupportId.ToString()));
+                }
 
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                Tuple<string, string, DateTime>  response = GenerateToken(_configuration["JWT:Secret"], authClaims);
+                Tuple<string, string, DateTime> response = GenerateToken(_configuration["JWT:Secret"], authClaims);
 
                 await _tokenService.AddToken(response.Item1, response.Item2, response.Item3);
 
@@ -63,17 +69,22 @@ namespace webapiG2T.Services.Implementations
                     Id = response.Item1,
                     Token = response.Item2,
                     Expiration = response.Item3,
+
+                    EntiteId=user.EntiteSupportId,
+
                     UserId = user.Id
                 };
             }
             return null;
         }
 
-        public async Task<Response> Register(RegisterModel model)
+        public async Task<Response> RegisterPretataire(RegisterModelTeleconseiller model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return new Response { Status = "Error", Message = "User already exists!" };
+                return new Response { Status = "Error", Message = "L'utilisateur existe déjà!" };
+
+         
 
 
             Utilisateur user = new Utilisateur()
@@ -84,19 +95,65 @@ namespace webapiG2T.Services.Implementations
                 Nom = model.Nom,
                 Prenom = model.Prenom,
                 PhoneNumber = model.Telephone,
-                Adresse = model.Adresse
+                Adresse = model.Adresse,
+                 PrestataireId= model.PrestaireId
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." };
+                return new Response { Status = "Error", Message = "L'échec de la création de l’utilisateur ! Veuillez vérifier les détails de l’utilisateur et réessayer." };
 
             if (await roleManager.RoleExistsAsync(model.Role))
             {
                 await userManager.AddToRoleAsync(user, model.Role);
             }
 
-            return new Response { Status = "Success", Message = "User created successfully!" };
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
+        }
+
+        public async Task<Response> Register(RegisterModel model)
+        {
+            var userExists = await userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return new Response { Status = "Error", Message = "L'utilisateur existe déjà!" };
+
+            if (model.EntiteId.HasValue && string.Equals(model.Role, "superviseur", StringComparison.OrdinalIgnoreCase))
+            {
+                var existingResponsable = await _context.Utilisateurs
+                 .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                 .Join(_context.Roles, ur => ur.ur.RoleId, r => r.Id, (ur, r) => new { ur.u, r })
+                 .Where(x => x.u.EntiteSupportId == model.EntiteId.Value && x.r.Name == "superviseur")
+                 .Select(x => x.u)
+                 .FirstOrDefaultAsync();
+                if (existingResponsable != null)
+                {
+                    return new Response { Status = "Error", Message = "L'entité est déjà assigné à un responsable." };
+                }
+            }
+
+
+            Utilisateur user = new Utilisateur()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                Nom = model.Nom,
+                Prenom = model.Prenom,
+                PhoneNumber = model.Telephone,
+                Adresse = model.Adresse,
+                EntiteSupportId = model.EntiteId
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return new Response { Status = "Error", Message = "L'échec de la création de l’utilisateur ! Veuillez vérifier les détails de l’utilisateur et réessayer." };
+
+            if (await roleManager.RoleExistsAsync(model.Role))
+            {
+                await userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
         }
 
         public Tuple<string, string, DateTime> GenerateToken(string secret, List<Claim> claims)
@@ -107,7 +164,7 @@ namespace webapiG2T.Services.Implementations
                 Issuer = _configuration["JWT:ValidIssuer"],
                 Audience = _configuration["JWT:ValidAudience"],
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(60), 
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -125,7 +182,9 @@ namespace webapiG2T.Services.Implementations
             await signInManager.SignOutAsync();
         }
 
-       
+
 
     }
+
+
 }

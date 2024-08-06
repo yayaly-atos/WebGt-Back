@@ -1,9 +1,11 @@
 ﻿using G2T.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class ServiceController : ControllerBase
@@ -33,7 +35,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(service);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Service service)
         {
@@ -45,7 +47,7 @@ namespace webapiG2T.Controllers
             await _serviceService.CreateServiceAsync(service);
             return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Service service)
         {

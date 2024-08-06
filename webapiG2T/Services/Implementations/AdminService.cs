@@ -15,22 +15,22 @@ namespace webapiG2T.Services.Implementations
         {
             if (string.IsNullOrWhiteSpace(model.Role))
             {
-                return new Response { Status = "error", Message = "Role name cannot be empty." };
+                return new Response { Status = "error", Message = "Le nom du rôle ne peut pas être vide." };
             }
 
             var roleExists = await _roleManager.RoleExistsAsync(model.Role);
             if (roleExists)
             {
-                return new Response { Status = "error", Message = "Role already exists." };
+                return new Response { Status = "error", Message = "Le rôle existe déjà." };
             }
 
             var result = await _roleManager.CreateAsync(new IdentityRole(model.Role));
             if (result.Succeeded)
             {
-                return new Response { Status = "success", Message = "Role created successfully." };
+                return new Response { Status = "success", Message = "Le rôle créé avec succès." };
             }
 
-            return new Response { Status = "error", Message = "Failed to create role." };
+            return new Response { Status = "error", Message = "Échec de la création du rôle." };
         }
     }
 }

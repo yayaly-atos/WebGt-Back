@@ -15,7 +15,7 @@ namespace webapiG2T.Controllers
             _adminService = adminService;
         }
 
-        [Authorize(Roles = "Admin")]
+     
         [HttpPost("Ajouter_Role")]
         public async Task<IActionResult> AjouterRole([FromBody] RoleModel roleName)
         {
@@ -28,5 +28,7 @@ namespace webapiG2T.Controllers
             
             return BadRequest(response.Result);
         }
+
+      
     }
 }
