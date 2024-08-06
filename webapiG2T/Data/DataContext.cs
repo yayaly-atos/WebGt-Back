@@ -29,7 +29,8 @@ namespace G2T.Data
         public DbSet<EntiteSupport> EntitesSupports { get; set; }
         public DbSet<RevoquerToken> RevoquerTokens { get; set; }
          public DbSet<Sla> Priorite { get; set; }
-     
+        public DbSet<HistoriqueIncident> Historiques { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {// Configuration existante

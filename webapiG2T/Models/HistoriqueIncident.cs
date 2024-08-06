@@ -4,6 +4,7 @@ namespace webapiG2T.Models
 {
     public class HistoriqueIncident
     {
+        public int Id { get; set; }
         public int IncidentId { get; set; }
         public  string Nature { get; set; }
         public  string ValeurPrecedente { get; set; }
