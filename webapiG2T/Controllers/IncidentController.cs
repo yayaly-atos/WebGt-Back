@@ -36,10 +36,12 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Agent")]
-        [HttpGet("agent-resolu/{idAgent}")]
-        public async Task<IActionResult> GetIncidentResoluByAgent(string idAgent)
+        [HttpGet("agent-resolu")]
+        public async Task<IActionResult> GetIncidentResoluByAgent()
         {
-            var incident = await _incidentService.GetIncidentsResoluByAgeNT(idAgent);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.GetIncidentsResoluByAgeNT(userId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident résolu n'a été trouvé avec l'identifiant de l'agent fourni.");
@@ -48,10 +50,12 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Agent")]
-        [HttpGet("agent-ouvert/{idAgent}")]
-        public async Task<IActionResult> GetIncidentOuvertByAgent(string idAgent)
+        [HttpGet("agent-ouvert")]
+        public async Task<IActionResult> GetIncidentOuvertByAgent()
         {
-            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(idAgent);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(userId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident ouvert n'a été trouvé avec l'identifiant de l'agent fourni.");
@@ -59,10 +63,12 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
         [Authorize(Roles = "Agent")]
-        [HttpGet("agent-nonouvert/{idAgent}")]
-        public async Task<IActionResult> GetIncidentNonOuvertByAgent(string idAgent)
+        [HttpGet("agent-nonouvert")]
+        public async Task<IActionResult> GetIncidentNonOuvertByAgent()
         {
-            var incident = await _incidentService.GetIncidentsNonOuvertByAgeNT(idAgent);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(userId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident non ouvert n'a été trouvé avec l'identifiant de l'agent fourni.");
@@ -137,10 +143,12 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Agent")]
-        [HttpGet("agent/{idAgent}")]
-        public async Task<IActionResult> GetIncidentByAgent(string idAgent)
+        [HttpGet("incident-agent")]
+        public async Task<IActionResult> GetIncidentByAgent()
         {
-            var incident = await _incidentService.GetIncidentsByAgent(idAgent);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(userId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident n'a été trouvé avec l'identifiant de l'agent fourni.");
