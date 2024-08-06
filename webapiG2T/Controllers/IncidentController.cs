@@ -174,10 +174,16 @@ namespace webapiG2T.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError, updatedIncident);
         }
         [Authorize(Roles = "Superviseur")]
-        [HttpGet("superviseur/{entiteId}")]
-        public async Task<IActionResult> GetIncidentBySuperviseur(int entiteId)
+        [HttpGet("superviseur")]
+        public async Task<IActionResult> GetIncidentBySuperviseur()
         {
-            var incident = await _incidentService.GetIncidentsBySuperviseur(entiteId);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsBySuperviseur(userEntiteId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident n'a été trouvé pour l'entite.");
@@ -185,10 +191,16 @@ namespace webapiG2T.Controllers
             return Ok(incident);
         }
         [Authorize(Roles = "Superviseur")]
-        [HttpGet("superviseur-resolu/{entiteId}")]
-        public async Task<IActionResult> GetIncidentResoluBySuperviseur(int entiteId)
+        [HttpGet("superviseur-resolu")]
+        public async Task<IActionResult> GetIncidentResoluBySuperviseur()
         {
-            var incident = await _incidentService.GetIncidentsResoluBySuperviseur(entiteId);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsResoluBySuperviseur(userEntiteId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident résolu n'a été trouvé pour l'entité.");
@@ -197,10 +209,16 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Superviseur")]
-        [HttpGet("superviseur-ouvert/{entiteId}")]
-        public async Task<IActionResult> GetIncidentOuvertBySuperviseur(int entiteId)
+        [HttpGet("superviseur-ouvert")]
+        public async Task<IActionResult> GetIncidentOuvertBySuperviseur()
         {
-            var incident = await _incidentService.GetIncidentsOuvertBySuperviseur(entiteId);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsOuvertBySuperviseur(userEntiteId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident résolu n'a été trouvé pour l'entité.");
@@ -209,10 +227,17 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Superviseur")]
-        [HttpGet("superviseur-nonouvert/{entiteId}")]
-        public async Task<IActionResult> GetIncidentNonOuvertBySuperviseur(int entiteId)
+        [HttpGet("superviseur-nonouvert")]
+        public async Task<IActionResult> GetIncidentNonOuvertBySuperviseur()
         {
-            var incident = await _incidentService.GetIncidentsNonOuvertBySuperviseur(entiteId);
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsNonOuvertBySuperviseur(userEntiteId);
             if (incident.Count == 0)
             {
                 return NotFound("\"Aucun incident résolu n'a été trouvé pour l'entité.");
@@ -224,6 +249,7 @@ namespace webapiG2T.Controllers
         [HttpPut("TakeIncident/{idIncident}/{agentID}")]
         public async Task<ActionResult> TakeIncident(int idIncident,String agentID)
         {
+
             var incident = await _incidentService.TakeIncident(idIncident, agentID);
             if (incident != null)
 
@@ -234,7 +260,7 @@ namespace webapiG2T.Controllers
         }
 
         [Authorize(Roles = "Superviseur")]
-        [HttpPut("EscaladeIncident")]
+        [HttpPut("EscaladeIncident")] 
         public async Task<ActionResult> EcaladeIncident([FromBody] EscaladeIncidentModel model)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

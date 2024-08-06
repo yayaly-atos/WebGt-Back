@@ -16,6 +16,7 @@ namespace webapiG2T.Services.Interfaces
         Task Logout();
 
         string DecodeTokenAndGetUserId(string token);
+        string DecodeTokenAndGetUEntiteId(string token);
 
 
 

@@ -213,6 +213,40 @@ namespace webapiG2T.Services.Implementations
                
                 return null;
             }
+
+        }
+
+        public string DecodeTokenAndGetUEntiteId(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
+
+            try
+            {
+
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["JWT:ValidIssuer"],
+                    ValidAudience = _configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+
+                SecurityToken validatedToken;
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+
+
+                var userEntiteIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "Entite");
+                return userEntiteIdClaim?.Value;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
         }
 
 

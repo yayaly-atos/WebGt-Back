@@ -5,6 +5,7 @@ using G2T.Models.enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using webapiG2T.Models;
 using webapiG2T.Models.Dto;
@@ -171,14 +172,21 @@ namespace webapiG2T.Services.Implementations
 
         public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto, String id)
         {
-            incidentDto.EntiteSupportId = 1;
+         
             incidentDto.DateCreation = DateTime.Now;
             var priorite = await _context.Priorite
-       .Where(p => p.Id == incidentDto.NiveauDurgenceId)
-       .FirstOrDefaultAsync();
+           .Where(p => p.Id == incidentDto.NiveauDurgenceId)
+           .FirstOrDefaultAsync();
             incidentDto.DateEcheance = DateTime.Now.Add(TimeSpan.Parse(priorite.Latence));
             var incident = await MapToIncidentAsync(incidentDto);
-            
+            incident.EntiteSupport = await _context.EntitesSupports
+              .OrderBy(es => es.Id)
+             .FirstOrDefaultAsync();
+            int idEntite = incident.EntiteSupport.Id;
+            incident.Superviseur = await _context.Utilisateurs
+           .Where(u => u.EntiteSupportId == idEntite)
+           .FirstOrDefaultAsync();
+
             _context.Incidents.Add(incident);
             var historiqueIncident = new HistoriqueIncident
             {
@@ -478,7 +486,7 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'agent non trouvé."
                 };
             }
-            String idAgentBefore = incident.Agent.Id ;
+            string idAgentBefore = incident.Agent != null ? incident.Agent.Id : null;
 
 
             incident.Agent = agent;
@@ -541,6 +549,7 @@ namespace webapiG2T.Services.Implementations
             }
 
             var entite = await _context.EntitesSupports.FindAsync(incident.EntiteSupport.Id + 1);
+          
             if (entite == null)
             {
                 return new Response
@@ -552,11 +561,14 @@ namespace webapiG2T.Services.Implementations
             var CommentBefore = incident.CommentaireEscalade;
             incident.EntiteSupport = entite;
             incident.CommentaireEscalade = commentaire;
-         
+            incident.Superviseur = await _context.Utilisateurs
+          .Where(u => u.EntiteSupportId == entite.Id)
+          .FirstOrDefaultAsync();
+
             var historiqueIncident = new HistoriqueIncident
             {
                 IncidentId = incident.Id,
-                Nature = "Création",
+                Nature = "Escalade",
                ValeurPrecedente= CommentBefore,
                 ValeurNouveau = commentaire,
                 DateHistorique = DateTime.Now,

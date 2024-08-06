@@ -90,8 +90,8 @@ namespace webapiG2T.Controllers
                 return Unauthorized("Token not provided.");
             }
 
-            // Decode the token and get user ID
-            var userId = _authService.DecodeTokenAndGetUserId(token);
+           
+            var userId = _authService.DecodeTokenAndGetUEntiteId(token);
 
             if (userId == null)
             {
