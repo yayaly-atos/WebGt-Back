@@ -14,10 +14,12 @@ namespace webapiG2T.Controllers
     public class IncidentController : ControllerBase
     {
         private readonly IIncidentService _incidentService;
+        private readonly IAuthenticationService _authService;
 
-        public IncidentController(IIncidentService incidentService)
+        public IncidentController(IIncidentService incidentService, IAuthenticationService authService)
         {
             _incidentService = incidentService;
+            _authService = authService;
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
@@ -110,12 +112,14 @@ namespace webapiG2T.Controllers
         [HttpPost("incident")]
         public async Task<IActionResult> CreateIncident([FromBody] CreateIncidentDtocs incidentDto)
         {
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var createdIncident = await _incidentService.CreateIncidentAsync(incidentDto);
+            var createdIncident = await _incidentService.CreateIncidentAsync(incidentDto, userId);
             return CreatedAtAction(nameof(GetIncidentById), new { incidentId = createdIncident.Id }, createdIncident);
         }
         [Authorize(Roles = "Teleconseiller,Superviseur,Agent")]
@@ -150,7 +154,9 @@ namespace webapiG2T.Controllers
         [HttpPut("demandeEscalade")]
         public async Task<ActionResult>  DemandeEscalade([FromBody] EscaladeIncidentModel model)
         {
-            var updatedIncident = await _incidentService.DemandeEscalade(model.IncidentId,model.Commentaire);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var updatedIncident = await _incidentService.DemandeEscalade(model.IncidentId,model.Commentaire, userId);
 
             if (updatedIncident == null)
             {
@@ -223,7 +229,9 @@ namespace webapiG2T.Controllers
         [HttpPut("EscaladeIncident")]
         public async Task<ActionResult> EcaladeIncident([FromBody] EscaladeIncidentModel model)
         {
-            var incident = await _incidentService.EscaladeIncident(model.IncidentId, model.Commentaire);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.EscaladeIncident(model.IncidentId, model.Commentaire, userId);
             if (incident != null)
 
             {
@@ -251,7 +259,9 @@ namespace webapiG2T.Controllers
         [HttpPut("EndResolution")]
         public async Task<ActionResult> EndResolutionIncident([FromBody] EscaladeIncidentModel model)
         {
-            var incident = await _incidentService.EndResolutionIncident(model.IncidentId,model.Commentaire);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+            var incident = await _incidentService.EndResolutionIncident(model.IncidentId,model.Commentaire, userId);
             if (incident != null)
 
             {

@@ -79,7 +79,29 @@ namespace webapiG2T.Controllers
             return StatusCode(StatusCodes.Status200OK, "Déconnecté(e) avec succès");
         }
 
-       
+        [HttpGet("getUserId")]
+        public IActionResult GetUserId()
+        {
+           
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (token == null)
+            {
+                return Unauthorized("Token not provided.");
+            }
+
+            // Decode the token and get user ID
+            var userId = _authService.DecodeTokenAndGetUserId(token);
+
+            if (userId == null)
+            {
+                return Unauthorized("Invalid token.");
+            }
+
+            return Ok(new { UserId = userId });
+        }
+
+
 
 
 

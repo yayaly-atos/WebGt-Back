@@ -15,8 +15,11 @@ namespace webapiG2T.Services.Interfaces
         Task<Response> RegisterPretataire(RegisterModelTeleconseiller model);
         Task Logout();
 
+        string DecodeTokenAndGetUserId(string token);
 
-       
+
+
+
 
 
 

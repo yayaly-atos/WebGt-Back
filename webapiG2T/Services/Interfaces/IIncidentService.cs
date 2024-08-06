@@ -12,7 +12,7 @@ namespace webapiG2T.Services.Interfaces
         Task<IncidentDto> GetIncidentByPhoneNumberAndIdAsync(string phoneNumber, int incidentId);
         Task<List<IncidentDto>> GetIncidentsByPhoneNumberAsync(string phoneNumber);
         Task<IncidentDto> GetIncidentByIDAsync(int incidentId);
-        Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto);
+        Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto,String id);
         Task<IncidentDto> UpdateIncident(int incidentId, CreateIncidentDtocs incidentDto);
         Task<List<IncidentDto>> GetIncidentsByAgent(String idAgent);
         Task<List<IncidentDto>> GetIncidentsResoluByAgeNT(String idAgent);
@@ -21,7 +21,7 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<IncidentDto>> GetIncidentsNonOuvertByAgeNT(String idAgent);
 
-        Task<Response> DemandeEscalade(int incidentID, String commentaire);
+        Task<Response> DemandeEscalade(int incidentID, String commentaire, String Id);
         Task<List<IncidentDto>> GetIncidentAllAsync();
 
     
@@ -33,8 +33,8 @@ namespace webapiG2T.Services.Interfaces
         Task<List<IncidentDto>> GetIncidentsNonOuvertBySuperviseur(int EntiteId);
         Task<Response> TakeIncident(int incidentId, String idAgent);
           Task<Response> StartResolutionIncident(int incidentID);
-        Task<Response> EscaladeIncident(int incidentI, String commentaire);
-        Task<Response> EndResolutionIncident(int incidentID,String commentaire);
+        Task<Response> EscaladeIncident(int incidentI, String commentaire, String Id);
+        Task<Response> EndResolutionIncident(int incidentID,String commentaire,String Id);
 
     }
 }

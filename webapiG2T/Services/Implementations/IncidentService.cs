@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using webapiG2T.Models;
 using webapiG2T.Models.Dto;
 using webapiG2T.Models.enums;
 using webapiG2T.Models.Forms;
@@ -168,7 +169,7 @@ namespace webapiG2T.Services.Implementations
             return incidentDtos;
         }
 
-        public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto)
+        public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto, String id)
         {
             incidentDto.EntiteSupportId = 1;
             incidentDto.DateCreation = DateTime.Now;
@@ -179,12 +180,26 @@ namespace webapiG2T.Services.Implementations
             var incident = await MapToIncidentAsync(incidentDto);
             
             _context.Incidents.Add(incident);
+            var historiqueIncident = new HistoriqueIncident
+            {
+                IncidentId = incident.Id,
+                Nature = "Création",
+
+                ValeurNouveau = incidentDto.CommentaireTeleconseiller,
+                DateHistorique = DateTime.Now,
+                Utilisateur = await _context.Utilisateurs.FindAsync(id)
+            };
+
+          
+            _context.Historiques.Add(historiqueIncident);
+            await _context.SaveChangesAsync();
+
             await _context.SaveChangesAsync();
 
             return await MapToIncidentDtoAsync(incident);
         }
 
-        public async Task<Response> DemandeEscalade(int incidentId, String commentaire  )
+        public async Task<Response> DemandeEscalade(int incidentId, String commentaire,String Id)
         {
             var incident = await _context.Incidents
                         .Where(i => i.Id == incidentId)
@@ -198,16 +213,32 @@ namespace webapiG2T.Services.Implementations
                 };
             if (incident.Escalade == false)
             {
+               
+
+                var historiqueIncident = new HistoriqueIncident
+                {
+                    IncidentId = incident.Id,
+                    Nature = "Demande Escalade",
+                    ValeurPrecedente=incident.CommentaireEscalade,
+                    ValeurNouveau = commentaire,
+                    DateHistorique = DateTime.Now,
+                    Utilisateur = await _context.Utilisateurs.FindAsync(Id)
+
+                };
                 incident.Escalade = true;
                 incident.CommentaireAgent = commentaire;
-                
+
+                // Ajouter l'historique à la base de données
+                _context.Historiques.Add(historiqueIncident);
+                await _context.SaveChangesAsync();
 
 
                 await _context.SaveChangesAsync();
 
+
                 return new Response
                 {
-                    Status = "Erreur",
+                    Status = "Succes",
                     Message = "la demande de escalade a été effectuée avec succès."
                 };
             }
@@ -475,7 +506,7 @@ namespace webapiG2T.Services.Implementations
             };
         }
 
-        public async Task<Response> EscaladeIncident(int incidentI,String commentaire)
+        public async Task<Response> EscaladeIncident(int incidentI,String commentaire, String Id)
         {
             var incident = await _context.Incidents
          .Include(i => i.EntiteSupport)
@@ -507,7 +538,7 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'entité à escalader n'existe pas."
                 };
             }
-
+            var CommentBefore = incident.CommentaireEscalade;
             incident.EntiteSupport = entite;
             incident.CommentaireEscalade = commentaire;
             try
@@ -522,6 +553,21 @@ namespace webapiG2T.Services.Implementations
                     Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
                 };
             }
+            var historiqueIncident = new HistoriqueIncident
+            {
+                IncidentId = incident.Id,
+                Nature = "Création",
+               ValeurPrecedente= CommentBefore,
+                ValeurNouveau = commentaire,
+                DateHistorique = DateTime.Now,
+                Utilisateur = await _context.Utilisateurs.FindAsync(Id)
+
+            };
+
+            // Ajouter l'historique à la base de données
+            _context.Historiques.Add(historiqueIncident);
+            await _context.SaveChangesAsync();
+
 
             return new Response
             {
@@ -566,7 +612,7 @@ namespace webapiG2T.Services.Implementations
 
 
         }
-        public async Task<Response> EndResolutionIncident(int incidentID, String commentaire)
+        public async Task<Response> EndResolutionIncident(int incidentID, String commentaire, String Id)
         {
             var incident = await _context.Incidents.FindAsync(incidentID);
 
@@ -579,7 +625,7 @@ namespace webapiG2T.Services.Implementations
                 };
             }
 
-
+            var CommentBefore=incident.CommentaireCloture;
             incident.StatutIncident = "resolu";
             incident.CommentaireCloture = commentaire;
             try
@@ -594,6 +640,20 @@ namespace webapiG2T.Services.Implementations
                     Message = $"Une erreur est survenue lors de l'enregistrement des modifications : {ex.Message}"
                 };
             }
+            var historiqueIncident = new HistoriqueIncident
+            {
+                IncidentId = incident.Id,
+                Nature = "Fin resolution",
+                ValeurPrecedente= CommentBefore,
+                ValeurNouveau = commentaire,
+                DateHistorique = DateTime.Now,
+                Utilisateur = await _context.Utilisateurs.FindAsync(Id)
+
+            };
+
+            // Ajouter l'historique à la base de données
+            _context.Historiques.Add(historiqueIncident);
+            await _context.SaveChangesAsync();
 
             return new Response
             {
