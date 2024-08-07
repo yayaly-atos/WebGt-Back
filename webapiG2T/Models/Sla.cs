@@ -10,6 +10,6 @@ namespace webapiG2T.Models
 
         public String Latence { get; set; }
 
-        public ICollection<Incident>  Incidents { get; set; }
+        public ICollection<Incident>?  Incidents { get; set; }
     }
 }

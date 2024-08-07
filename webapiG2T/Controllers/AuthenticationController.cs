@@ -54,7 +54,7 @@ namespace webapiG2T.Controllers
         }
       
         [HttpPost]
-        [Route("register-teleconseiller")]
+        [Route("register-teleconseiller-prestataire")]
         public async Task<IActionResult> RegisterTelecnseiller([FromBody] RegisterModelTeleconseiller model)
         {
             var response = await _authService.RegisterPretataire(model);

@@ -23,7 +23,7 @@ namespace G2T.Controllers
 
             if (contact == null)
             {
-                return NotFound();
+                return NotFound("le numero de telephone n'existe pas");
             }
 
             return Ok(contact);
