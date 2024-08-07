@@ -38,6 +38,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -55,6 +56,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -76,6 +78,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -97,6 +100,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -118,6 +122,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -140,6 +145,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -156,6 +162,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -205,6 +212,9 @@ namespace webapiG2T.Services.Implementations
           
             _context.Historiques.Add(historiqueIncident);
             await _context.SaveChangesAsync();
+            incident.sousMotif = await _context.SousMotifs
+        .Include(sm => sm.Motif)
+        .FirstOrDefaultAsync(sm => sm.Id == incidentDto.SousMotifId);
 
             return await MapToIncidentDtoAsync(incident);
         }
@@ -238,7 +248,8 @@ namespace webapiG2T.Services.Implementations
                 incident.Escalade = true;
                 incident.CommentaireAgent = commentaire;
 
-                // Ajouter l'historique à la base de données
+              
+
                 _context.Historiques.Add(historiqueIncident);
                 await _context.SaveChangesAsync();
 
@@ -273,6 +284,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
                 .Include(i => i.sousMotif)
+                .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
                 .Include(i => i.Service)
                 .Include(i => i.EntiteSupport)
@@ -314,6 +326,7 @@ namespace webapiG2T.Services.Implementations
                 DateRelance = incident.DateRelance,
                 DateResolution = incident.DateResolution,
                 Escalade = incident.Escalade,
+                Motif=incident.sousMotif.Motif.Nom,
                 AgentId = incident.Agent?.Id, 
                 SuperviseurId = incident.Superviseur?.Id, 
                 TeleconseillerId = incident.Teleconseiller?.Id, 
@@ -356,6 +369,7 @@ namespace webapiG2T.Services.Implementations
               .Include(i => i.NiveauDurgence)
               .Include(i => i.Canal)
               .Include(i => i.sousMotif)
+              .ThenInclude(sm => sm.Motif)
               .Include(i => i.Teleconseiller)
               .Include(i => i.Service)
               .Include(i => i.EntiteSupport)
@@ -377,6 +391,7 @@ namespace webapiG2T.Services.Implementations
                .Include(i => i.NiveauDurgence)
                .Include(i => i.Canal)
                .Include(i => i.sousMotif)
+               .ThenInclude(sm => sm.Motif)
                .Include(i => i.Teleconseiller)
                .Include(i => i.Service)
                .Include(i => i.EntiteSupport)
@@ -398,6 +413,7 @@ namespace webapiG2T.Services.Implementations
                .Include(i => i.NiveauDurgence)
                .Include(i => i.Canal)
                .Include(i => i.sousMotif)
+               .ThenInclude(sm => sm.Motif)
                .Include(i => i.Teleconseiller)
                .Include(i => i.Service)
                .Include(i => i.EntiteSupport)
@@ -419,6 +435,7 @@ namespace webapiG2T.Services.Implementations
                .Include(i => i.NiveauDurgence)
                .Include(i => i.Canal)
                .Include(i => i.sousMotif)
+               .ThenInclude(sm => sm.Motif)
                .Include(i => i.Teleconseiller)
                .Include(i => i.Service)
                .Include(i => i.EntiteSupport)
@@ -518,9 +535,27 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'incident n'a pas d'entité de support associée."
                 };
             }
+            var entitesSupports = await _context.EntitesSupports.OrderBy(es => es.Id).ToListAsync();
 
-            var entite = await _context.EntitesSupports.FindAsync(incident.EntiteSupport.Id + 1);
-          
+           
+            var currentEntiteSupport = incident.EntiteSupport;
+
+           
+            int currentIndex = entitesSupports.FindIndex(es => es.Id == currentEntiteSupport.Id);
+            if (currentIndex < 0 || currentIndex >= entitesSupports.Count - 1)
+            {
+                return new Response
+                {
+                    Status = "Erreur",
+                    Message = "L'incident ne peut plus etre escalader"
+                };
+            }
+
+
+            int nextEntiteIndex = (currentIndex + 1);
+
+           var entite = entitesSupports[nextEntiteIndex];
+
             if (entite == null)
             {
                 return new Response

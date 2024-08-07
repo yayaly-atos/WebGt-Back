@@ -6,6 +6,8 @@
         public int Id { get; set; }
         public string NomCanal { get; set; }
         public String sousMotif { get; set; }
+
+        public String Motif { get; set; }
         public string Description { get; set; }
         public string StatutIncident { get; set; }
         public DateTime? DateAffectation { get; set; }
