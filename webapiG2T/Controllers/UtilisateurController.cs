@@ -60,5 +60,17 @@ namespace webapiG2T.Controllers
             }
             return Ok(agents);
         }
+
+        [HttpGet("agents-by-id/{agentID}")]
+        public async Task<IActionResult> GetAgentsByEntite(string agentID)
+        {
+            var agents = await _utIlisateurService.GetAgentById(agentID);
+            if (agents == null )
+            {
+                return NotFound(new { Message = "Pas d'agent touve" });
+            }
+            return Ok(agents);
+        }
+
     }
 }

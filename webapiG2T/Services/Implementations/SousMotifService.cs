@@ -27,6 +27,8 @@ namespace webapiG2T.Services.Implementations
        .ToListAsync();
             var sousMotifsDto = sousMotifs.Select(sm => new SousMotifDtoReturn
             {
+                SousMotifId= sm.Id,
+                MotifId = sm.Motif.Id,
                 Nom = sm.Nom,
                 MotifNom = sm.Motif.Nom 
             }).ToList();

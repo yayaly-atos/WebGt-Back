@@ -321,7 +321,7 @@ namespace webapiG2T.Services.Implementations
                 NomService = incident.Service?.NomService,
                 TypeService = incident.Service?.TypeService,
                 NiveauDurgenceId = incident.NiveauDurgence.Id, 
-                EntiteSupportId = incident.EntiteSupport.Id, 
+                EntiteSupportNom = incident.EntiteSupport.NomEntite, 
                 CommentaireEscalade = incident.CommentaireEscalade,
                 CommentaireAgent = incident.CommentaireAgent,
                 CommentaireCloture = incident.CommentaireCloture,
