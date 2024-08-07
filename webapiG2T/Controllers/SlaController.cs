@@ -10,6 +10,7 @@ namespace webapiG2T.Controllers
    
     [ApiController]
     [Route("webapig2t/[controller]")]
+    [Authorize]
     public class SlaController : ControllerBase
     {
         private readonly ISLaService _slaserice;

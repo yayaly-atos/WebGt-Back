@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
     [ApiController]
     [Route("webapig2t/[controller]")]
+    
     public class UtilisateurController : ControllerBase
     {
 

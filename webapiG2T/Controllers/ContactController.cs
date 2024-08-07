@@ -7,6 +7,7 @@ namespace G2T.Controllers
 {
     [ApiController]
     [Route("webapig2t/[controller]")]
+    [Authorize]
     public class ContactController : ControllerBase
     {
         private readonly IContactService _contactService;

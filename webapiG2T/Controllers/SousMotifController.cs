@@ -10,6 +10,7 @@ namespace webapiG2T.Controllers
     
     [Route("webapig2t/[controller]")]
     [ApiController]
+    [Authorize]
     public class SousMotifController:ControllerBase
     {
 

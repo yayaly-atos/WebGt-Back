@@ -8,6 +8,7 @@ namespace webapiG2T.Controllers
   
     [Route("webapig2t/[controller]")]
     [ApiController]
+    [Authorize]
     public class MotifController : ControllerBase
     {
         private readonly IMotifService _motifService;
