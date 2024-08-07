@@ -122,7 +122,7 @@ namespace webapiG2T.Services.Implementations
                 var existingResponsable = await _context.Utilisateurs
                  .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
                  .Join(_context.Roles, ur => ur.ur.RoleId, r => r.Id, (ur, r) => new { ur.u, r })
-                 .Where(x => x.u.EntiteSupportId == model.EntiteId.Value && x.r.Name == "superviseur")
+                 .Where(x => x.u.EntiteSupportId == model.EntiteId.Value && x.r.Name == "Superviseur")
                  .Select(x => x.u)
                  .FirstOrDefaultAsync();
                 if (existingResponsable != null)

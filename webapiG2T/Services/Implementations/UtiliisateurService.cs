@@ -29,6 +29,7 @@ namespace webapiG2T.Services.Implementations
                                          Email = user.Email,
                                          Nom = user.Nom,
                                          Prenom = user.Prenom,
+                                         Role = role.Name,
                                          Adresse = user.Adresse,
                                          Disponiblite = user.Disponiblite,
                                          Actif = user.Actif
@@ -50,6 +51,7 @@ namespace webapiG2T.Services.Implementations
                                          Email = user.Email,
                                          Nom = user.Nom,
                                          Prenom = user.Prenom,
+                                         Role = role.Name,
                                          Adresse = user.Adresse,
                                          Disponiblite = user.Disponiblite,
                                          Actif = user.Actif
@@ -70,6 +72,7 @@ namespace webapiG2T.Services.Implementations
                                          UserName = user.UserName,
                                          Email = user.Email,
                                          Nom = user.Nom,
+                                         Role = role.Name,
                                          Prenom = user.Prenom,
                                          Adresse = user.Adresse,
                                          Disponiblite = user.Disponiblite,
@@ -90,6 +93,7 @@ namespace webapiG2T.Services.Implementations
                                          UserName = user.UserName,
                                          Email = user.Email,
                                          Nom = user.Nom,
+                                         Role = role.Name,
                                          Prenom = user.Prenom,
                                          Adresse = user.Adresse,
                                          Disponiblite = user.Disponiblite,

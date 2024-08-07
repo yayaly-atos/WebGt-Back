@@ -20,7 +20,7 @@ namespace webapiG2T.Controllers
             _authService = authService;
         }
 
-
+        [Authorize(Roles = "Superviseur")]
         [HttpGet("agents-by-entite")]
         public async Task<IActionResult> GetAgentsByEntite()
         {
@@ -33,7 +33,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(agents);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("agents")]
         public async Task<IActionResult> GetAgents()
         {
@@ -44,7 +44,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(agents);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("teleconseiller")]
         public async Task<IActionResult> GetTelleconseiller()
         {
@@ -55,6 +55,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(agents);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("Superviseur")]
         public async Task<IActionResult> GetSuperviseur()
         {
@@ -65,7 +66,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(agents);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("agents-by-id/{agentID}")]
         public async Task<IActionResult> GetAgentsByEntite(string agentID)
         {
