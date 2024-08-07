@@ -68,7 +68,7 @@ namespace webapiG2T.Controllers
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var userId = _authService.DecodeTokenAndGetUserId(token);
-            var incident = await _incidentService.GetIncidentsOuvertByAgeNT(userId);
+            var incident = await _incidentService.GetIncidentsNonOuvertByAgeNT(userId);
             if (incident.Count == 0)
             {
                 return NotFound("Aucun incident non ouvert n'a été trouvé avec l'identifiant de l'agent fourni.");
