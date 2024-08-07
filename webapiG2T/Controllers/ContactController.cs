@@ -29,5 +29,17 @@ namespace G2T.Controllers
 
             return Ok(contact);
         }
+        [HttpGet("by-id/{idContact}")]
+        public async Task<IActionResult> GetContactById(string idContact)
+        {
+            var contact = await _contactService.GetContactByIDAsync(idContact);
+
+            if (contact == null)
+            {
+                return NotFound("l'id de contact n'existe pas");
+            }
+
+            return Ok(contact);
+        }
     }
 }

@@ -37,5 +37,27 @@ namespace webapiG2T.Services.Implementations
                 CompteId = contact.Compte.Id
             };
         }
+
+        public async Task<ContactDto> GetContactByIDAsync(string id)
+        {
+            var contact = await _context.Contacts
+                .Include(c => c.Compte)
+                .FirstOrDefaultAsync(c => c.Id.ToString() == id);
+
+            if (contact == null)
+            {
+                return null;
+            }
+
+            return new ContactDto
+            {
+                Id = contact.Id,
+                Nom = contact.Nom,
+                Prenom = contact.Prenom,
+                Telephone = contact.Telephone,
+                Adresse = contact.Adresse,
+                CompteId = contact.Compte.Id
+            };
+        }
     }
 }
