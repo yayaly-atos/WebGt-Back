@@ -6,7 +6,7 @@ using webapiG2T.Services.Interfaces;
 namespace G2T.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("webapig2t/[controller]")]
     public class ContactController : ControllerBase
     {
         private readonly IContactService _contactService;
