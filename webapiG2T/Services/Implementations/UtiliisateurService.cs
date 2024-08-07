@@ -16,12 +16,12 @@ namespace webapiG2T.Services.Implementations
             _context = context;
         }
 
-        public async Task<List<UtilisateurDto>> GetUsersAgentByEntite(int entiteID)
+        public async Task<List<UtilisateurDto>> GetUsersAgentByEntite(String entiteID)
         {
             var usersInRole = await (from user in _context.Users
                                      join userRole in _context.UserRoles on user.Id equals userRole.UserId
                                      join role in _context.Roles on userRole.RoleId equals role.Id
-                                     where role.Name == "Agent" && ((Utilisateur)user).EntiteSupportId == entiteID
+                                     where role.Name == "Agent" && ((Utilisateur)user).EntiteSupportId.ToString() == entiteID
                                      select new UtilisateurDto
                                      {
                                          Id = user.Id,

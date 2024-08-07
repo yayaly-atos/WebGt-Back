@@ -11,19 +11,22 @@ namespace webapiG2T.Controllers
     {
 
         private readonly IUtIlisateurService _utIlisateurService;
-    
+        private readonly IAuthenticationService _authService;
 
-        public UtilisateurController(IUtIlisateurService utIlisateurService)
+
+        public UtilisateurController(IUtIlisateurService utIlisateurService, IAuthenticationService authService)
         {
             _utIlisateurService = utIlisateurService;
-           
+            _authService = authService;
         }
-    
 
-        [HttpGet("agents-by-entite/{entiteID}")]
-        public async Task<IActionResult> GetAgentsByEntite(int entiteID)
+
+        [HttpGet("agents-by-entite")]
+        public async Task<IActionResult> GetAgentsByEntite()
         {
-            var agents = await _utIlisateurService.GetUsersAgentByEntite(entiteID);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            var agents = await _utIlisateurService.GetUsersAgentByEntite(userEntiteIdString);
             if (agents == null || agents.Count == 0)
             {
                 return NotFound(new { Message = "Pas d'agents touves" });

@@ -108,7 +108,7 @@ namespace webapiG2T.Services.Implementations
                 await userManager.AddToRoleAsync(user, model.Role);
             }
 
-            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!"  };
         }
 
         public async Task<Response> Register(RegisterModel model)
@@ -153,7 +153,7 @@ namespace webapiG2T.Services.Implementations
                 await userManager.AddToRoleAsync(user, model.Role);
             }
 
-            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!" };
+            return new Response { Status = "Success", Message = "L'utilisateur créé avec succès!"+ model.EntiteId };
         }
 
         public Tuple<string, string, DateTime> GenerateToken(string secret, List<Claim> claims)
