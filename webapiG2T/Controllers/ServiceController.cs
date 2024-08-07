@@ -5,7 +5,7 @@ using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
 {
-    [Authorize(Roles = "Admin")]
+  
     [Route("webapig2t/[controller]")]
     [ApiController]
     public class ServiceController : ControllerBase
