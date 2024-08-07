@@ -173,12 +173,14 @@ namespace webapiG2T.Services.Implementations
         public async Task<IncidentDto> CreateIncidentAsync(CreateIncidentDtocs incidentDto, String id)
         {
          
-            incidentDto.DateCreation = DateTime.Now;
+           
             var priorite = await _context.Priorite
            .Where(p => p.Id == incidentDto.NiveauDurgenceId)
            .FirstOrDefaultAsync();
-            incidentDto.DateEcheance = DateTime.Now.Add(TimeSpan.Parse(priorite.Latence));
+         
             var incident = await MapToIncidentAsync(incidentDto);
+            incident.DateEcheance = DateTime.Now.Add(TimeSpan.Parse(priorite.Latence));
+            incident.DateCreation = DateTime.Now;
             incident.EntiteSupport = await _context.EntitesSupports
               .OrderBy(es => es.Id)
              .FirstOrDefaultAsync();
@@ -186,6 +188,8 @@ namespace webapiG2T.Services.Implementations
             incident.Superviseur = await _context.Utilisateurs
            .Where(u => u.EntiteSupportId == idEntite)
            .FirstOrDefaultAsync();
+            incident.StatutIncident = "nouveau";
+            incident.Teleconseiller = await _context.Utilisateurs.FindAsync(id);
 
             _context.Incidents.Add(incident);
             var historiqueIncident = new HistoriqueIncident
@@ -260,32 +264,7 @@ namespace webapiG2T.Services.Implementations
            
         }
 
-        public async Task<IncidentDto> UpdateIncident(int incidentId, CreateIncidentDtocs incidentDto)
-        {
-            var incident = await _context.Incidents.FindAsync(incidentId);
-
-            if (incident == null)
-            {
-                return null;
-            }
-
-            incident.CommentaireCloture = incidentDto.CommentaireCloture;
-            incident.StatutIncident = incidentDto.StatutIncident ;
-            incident.DateResolution = incidentDto.DateResolution;
-            incident.CommentaireAgent = incidentDto.CommentaireAgent;
-            incident.CommentaireTeleconseiller = incidentDto.CommentaireTeleconseiller;
-            incident.CommentaireEscalade=incidentDto.CommentaireEscalade;
-            incident.DateAffectation = incidentDto.DateAffectation;
-            incident.DateRelance = incidentDto.DateRelance;
-            incident.DateEscalade = incidentDto.DateEscalade;
-            incident.Escalade= incidentDto.Escalade;
-            
-
-
-            await _context.SaveChangesAsync();
-
-            return await GetIncidentByIDAsync(incidentId);
-        }
+       
 
         public async Task<List<IncidentDto>> GetIncidentsByAgent(String idAgent)
         {
@@ -355,28 +334,18 @@ namespace webapiG2T.Services.Implementations
             return new Incident
             {
                 Description = dto.Description,
-                StatutIncident = dto.StatutIncident,
-                DateAffectation = dto.DateAffectation,
-                DateCreation = dto.DateCreation,
-                DateEscalade = dto.DateEscalade,
-                DateEcheance = dto.DateEcheance,
-                DateRelance = dto.DateRelance,
-                DateResolution = dto.DateResolution,
-                Escalade = dto.Escalade,
-                CommentaireEscalade = dto.CommentaireEscalade,
-                CommentaireAgent = dto.CommentaireAgent,
-                CommentaireCloture = dto.CommentaireCloture,
+            
+              
                 CommentaireTeleconseiller = dto.CommentaireTeleconseiller,
                 Contact = await _context.Contacts.FindAsync(dto.ContactId),
                 Canal = await _context.Canaux.FindAsync(dto.CanalId),
-                sousMotif = await _context.SousMotifs.FindAsync(dto.MotifId),
+                sousMotif = await _context.SousMotifs.FindAsync(dto.SousMotifId),
        
                 Service = await _context.Services.FindAsync(dto.ServiceId),
                 NiveauDurgence = await _context.Priorite.FindAsync(dto.NiveauDurgenceId),
-                EntiteSupport = await _context.EntitesSupports.FindAsync(dto.EntiteSupportId),
-                Agent = dto.AgentId != null ? await _context.Utilisateurs.FindAsync(dto.AgentId) : null,
-                Superviseur = await _context.Utilisateurs.FindAsync(dto.SuperviseurId),
-                Teleconseiller = await _context.Utilisateurs.FindAsync(dto.TeleconseillerId)
+              
+               
+               
             };
         }
 

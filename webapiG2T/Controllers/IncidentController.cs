@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using webapiG2T.Models.Dto;
-using webapiG2T.Models.Forms;
+using webapiG2T.Models.Forms;    
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
@@ -103,7 +103,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-        [Authorize(Roles = "Teleconseiller")]
+        [Authorize(Roles = "Teleconseiller,Agent")]
         [HttpGet("id/{incidentId}")]
         public async Task<IActionResult> GetIncidentById(int incidentId)
         {
@@ -128,19 +128,7 @@ namespace webapiG2T.Controllers
             var createdIncident = await _incidentService.CreateIncidentAsync(incidentDto, userId);
             return CreatedAtAction(nameof(GetIncidentById), new { incidentId = createdIncident.Id }, createdIncident);
         }
-        [Authorize(Roles = "Teleconseiller,Superviseur,Agent")]
-        [HttpPut("changeStatsus/{id}")]
-        public async Task<ActionResult<IncidentDto>> UpdateIncidentCommentAndStatus(int id, [FromBody] CreateIncidentDtocs dto)
-        {
-            var updatedIncident = await _incidentService.UpdateIncident(id, dto);
-
-            if (updatedIncident == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(updatedIncident);
-        }
+      
 
         [Authorize(Roles = "Agent")]
         [HttpGet("incident-agent")]
