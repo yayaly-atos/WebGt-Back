@@ -105,6 +105,10 @@ namespace webapiG2T.Services.Implementations
         async Task<UtilisateurDto> IUtIlisateurService.GetAgentById(string idAgent)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == idAgent);
+            if (user == null)
+            {
+                return null; 
+            }
             var userDto = new UtilisateurDto
             {
                 Id = user.Id,
