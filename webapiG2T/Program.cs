@@ -98,6 +98,7 @@ builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISLaService, SlaService>();
 builder.Services.AddScoped<IUtIlisateurService, UtiliisateurService>();
+builder.Services.AddScoped<IEntiteSupport, EntiteSupportService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddSwaggerGen(options =>

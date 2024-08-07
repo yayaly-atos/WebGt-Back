@@ -498,6 +498,8 @@ namespace webapiG2T.Services.Implementations
         {
             var incident = await _context.Incidents
          .Include(i => i.EntiteSupport)
+         .Include(i => i.Agent)
+         .Include(i => i.Superviseur)
          .FirstOrDefaultAsync(i => i.Id == incidentI);
             if (incident == null)
             {
@@ -529,6 +531,8 @@ namespace webapiG2T.Services.Implementations
             }
             var CommentBefore = incident.CommentaireEscalade;
             incident.EntiteSupport = entite;
+            incident.StatutIncident = "nouveau";
+            incident.Agent=null;
             incident.CommentaireEscalade = commentaire;
             incident.Superviseur = await _context.Utilisateurs
           .Where(u => u.EntiteSupportId == entite.Id)
