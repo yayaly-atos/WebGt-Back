@@ -395,7 +395,7 @@ namespace webapiG2T.Services.Implementations
                .Include(i => i.Teleconseiller)
                .Include(i => i.Service)
                .Include(i => i.EntiteSupport)
-               .Where(i => i.EntiteSupport.Id == EntiteId && i.StatutIncident == "nouveau")
+               .Where(i => i.EntiteSupport.Id == EntiteId && i.StatutIncident == "resolu")
                .ToListAsync();
 
             var incidentDtos = new List<IncidentDto>();
@@ -693,8 +693,48 @@ namespace webapiG2T.Services.Implementations
             };
         }
 
+        async Task<List<IncidentDto>> IIncidentService.GetIncidentsNonAttribueBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+              .Include(i => i.Contact)
+              .Include(i => i.NiveauDurgence)
+              .Include(i => i.Canal)
+              .Include(i => i.sousMotif)
+              .ThenInclude(sm => sm.Motif)
+              .Include(i => i.Teleconseiller)
+              .Include(i => i.Service)
+              .Include(i => i.EntiteSupport)
+              .Where(i => i.EntiteSupport.Id == EntiteId && i.Agent == null)
+              .ToListAsync();
 
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
 
+        async Task<List<IncidentDto>> IIncidentService.GetIncidentsAEscaladeBySuperviseur(int EntiteId)
+        {
+            var incidents = await _context.Incidents
+              .Include(i => i.Contact)
+              .Include(i => i.NiveauDurgence)
+              .Include(i => i.Canal)
+              .Include(i => i.sousMotif)
+              .ThenInclude(sm => sm.Motif)
+              .Include(i => i.Teleconseiller)
+              .Include(i => i.Service)
+              .Include(i => i.EntiteSupport)
+              .Where(i => i.EntiteSupport.Id == EntiteId && i.Escalade == true)
+              .ToListAsync();
 
+            var incidentDtos = new List<IncidentDto>();
+            foreach (var incident in incidents)
+            {
+                incidentDtos.Add(await MapToIncidentDtoAsync(incident));
+            }
+            return incidentDtos;
+        }
     }
 }

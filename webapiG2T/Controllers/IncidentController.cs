@@ -209,7 +209,7 @@ namespace webapiG2T.Controllers
             var incident = await _incidentService.GetIncidentsOuvertBySuperviseur(userEntiteId);
             if (incident.Count == 0)
             {
-                return NotFound("Aucun incident résolu n'a été trouvé pour l'entité.");
+                return NotFound("Aucun incident  n'a été trouvé pour l'entité.");
             }
             return Ok(incident);
         }
@@ -229,6 +229,42 @@ namespace webapiG2T.Controllers
             if (incident.Count == 0)
             {
                 return NotFound("\"Aucun incident résolu n'a été trouvé pour l'entité.");
+            }
+            return Ok(incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur-non-attribue")]
+        public async Task<IActionResult> GetIncidentNonAttribueBySuperviseur()
+        {
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsNonAttribueBySuperviseur(userEntiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident non attribue n'a été trouvé pour l'entité.");
+            }
+            return Ok(incident);
+        }
+
+        [Authorize(Roles = "Superviseur")]
+        [HttpGet("superviseur-a-escalade")]
+        public async Task<IActionResult> GetIncidentAEscaladeBySuperviseur()
+        {
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var userEntiteIdString = _authService.DecodeTokenAndGetUEntiteId(token);
+            if (!int.TryParse(userEntiteIdString, out int userEntiteId))
+            {
+                return BadRequest("L'ID de l'entité récupéré du token n'est pas valide.");
+            }
+            var incident = await _incidentService.GetIncidentsAEscaladeBySuperviseur(userEntiteId);
+            if (incident.Count == 0)
+            {
+                return NotFound("Aucun incident à escaladé n'a été trouvé pour l'entité.");
             }
             return Ok(incident);
         }

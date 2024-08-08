@@ -29,7 +29,7 @@ namespace webapiG2T.Controllers
             var agents = await _utIlisateurService.GetUsersAgentByEntite(userEntiteIdString);
             if (agents == null || agents.Count == 0)
             {
-                return NotFound(new { Message = "Pas d'agents touves" });
+                return NotFound(new { Message = "Pas d'agents touves"+ userEntiteIdString });
             }
             return Ok(agents);
         }

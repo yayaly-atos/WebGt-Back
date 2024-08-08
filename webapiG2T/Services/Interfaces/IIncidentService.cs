@@ -36,5 +36,10 @@ namespace webapiG2T.Services.Interfaces
         Task<Response> EscaladeIncident(int incidentI, String commentaire, String Id);
         Task<Response> EndResolutionIncident(int incidentID,String commentaire,String Id);
 
+        Task<List<IncidentDto>> GetIncidentsNonAttribueBySuperviseur(int EntiteId);
+        Task<List<IncidentDto>> GetIncidentsAEscaladeBySuperviseur(int EntiteId);
+
+
+
     }
 }
