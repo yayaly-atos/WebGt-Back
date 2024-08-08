@@ -78,5 +78,16 @@ namespace webapiG2T.Controllers
             return Ok(agents);
         }
 
+        [HttpGet("user-by-id/{idUser}")]
+        public async Task<IActionResult> GetUserById(string idUser)
+        {
+            var agent = await _utIlisateurService.GetUserBYId(idUser);
+            if (agent == null)
+            {
+                return NotFound(new { Message = "Pas d'utulisateur touve" });
+            }
+            return Ok(agent);
+        }
+
     }
 }

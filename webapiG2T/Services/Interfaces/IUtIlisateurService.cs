@@ -16,5 +16,8 @@ namespace webapiG2T.Services.Interfaces
 
         Task<UtilisateurDto> GetAgentById(string idAgent);
 
+        Task<UtilisateurDto> GetUserBYId(string idUser);
+
+
     }
 }

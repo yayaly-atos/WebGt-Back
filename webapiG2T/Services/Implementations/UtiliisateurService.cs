@@ -124,5 +124,25 @@ namespace webapiG2T.Services.Implementations
 
             return userDto;
         }
+
+        async Task<UtilisateurDto> IUtIlisateurService.GetUserBYId(string idUser)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == idUser);
+            if (user == null)
+            {
+                return null;
+            }
+            var userDto = new UtilisateurDto
+            {
+                Id = user.Id,
+                Nom = user.Nom,
+                Prenom = user.Prenom,
+                Email = user.Email
+                
+
+            };
+
+            return userDto;
+        }
     }
 }
