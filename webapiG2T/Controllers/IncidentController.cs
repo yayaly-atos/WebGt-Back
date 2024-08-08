@@ -103,7 +103,7 @@ namespace webapiG2T.Controllers
             }
             return Ok(incident);
         }
-        [Authorize(Roles = "Teleconseiller,Agent")]
+        [Authorize(Roles = "Teleconseiller,Agent,Superviseur")]
         [HttpGet("id/{incidentId}")]
         public async Task<IActionResult> GetIncidentById(int incidentId)
         {
