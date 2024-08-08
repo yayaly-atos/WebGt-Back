@@ -156,10 +156,10 @@ namespace webapiG2T.Controllers
 
             if (updatedIncident == null)
             {
-                return StatusCode(StatusCodes.Status200OK, updatedIncident);
+                return StatusCode(StatusCodes.Status404NotFound, updatedIncident);
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError, updatedIncident);
+            return StatusCode(StatusCodes.Status200OK, updatedIncident);
         }
         [Authorize(Roles = "Superviseur")]
         [HttpGet("superviseur")]
