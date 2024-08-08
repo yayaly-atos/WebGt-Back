@@ -535,11 +535,7 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'incident n'a pas d'entité de support associée."
                 };
             }
-            if (incident.Escalade == true)
-            {
-                incident.Escalade = false;
-
-            }
+           
             var entitesSupports = await _context.EntitesSupports.OrderBy(es => es.Id).ToListAsync();
 
            
@@ -569,7 +565,13 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'entité à escalader n'existe pas."
                 };
             }
+
             var CommentBefore = incident.CommentaireEscalade;
+            if (incident.Escalade == true)
+            {
+                incident.Escalade = false;
+
+            }
             incident.EntiteSupport = entite;
             incident.StatutIncident = "nouveau";
             incident.Agent=null;
