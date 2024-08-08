@@ -535,6 +535,11 @@ namespace webapiG2T.Services.Implementations
                     Message = "L'incident n'a pas d'entité de support associée."
                 };
             }
+            if (incident.Escalade == true)
+            {
+                incident.Escalade = false;
+
+            }
             var entitesSupports = await _context.EntitesSupports.OrderBy(es => es.Id).ToListAsync();
 
            
