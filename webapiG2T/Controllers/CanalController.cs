@@ -47,19 +47,16 @@ namespace webapiG2T.Controllers
             return CreatedAtAction(nameof(GetCanalNom), new { id = createdCanal.Id }, createdCanal);
         }
         [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCanal(int id, [FromBody] Canal updatedCanal)
+        [HttpPut]
+        public async Task<IActionResult> UpdateCanal( [FromBody] Canal updatedCanal)
         {
-            if (id != updatedCanal.Id)
-            {
-                return BadRequest("L'identifiant est incompatible");
-            }
+            
 
             var result = await _canalService.UpdateCanalAsync(updatedCanal);
 
             if (result)
             {
-                return NoContent();
+                return Ok(updatedCanal);
             }
 
             return NotFound();

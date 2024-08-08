@@ -18,6 +18,8 @@ namespace webapiG2T.Services.Interfaces
 
         Task<UtilisateurDto> GetUserBYId(string idUser);
 
+        Task<List<UtilisateurDto>> GetAdminById();
+
 
     }
 }

@@ -89,5 +89,17 @@ namespace webapiG2T.Controllers
             return Ok(agent);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAdmin()
+        {
+            var admins = await _utIlisateurService.GetAdminById();
+            if (admins == null || admins.Count == 0)
+            {
+                return NotFound(new { Message = "Pas d'adminitrateurs touves" });
+            }
+            return Ok(admins);
+        }
+
     }
 }

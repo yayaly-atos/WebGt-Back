@@ -56,7 +56,7 @@ namespace webapiG2T.Controllers
 
             if (result)
             {
-                return NoContent();
+                return Ok(updatedMotif);
             }
 
             return NotFound();

@@ -144,5 +144,28 @@ namespace webapiG2T.Services.Implementations
 
             return userDto;
         }
+
+      
+        async Task<List<UtilisateurDto>> IUtIlisateurService.GetAdminById()
+        {
+            var usersInRole = await(from user in _context.Users
+                                    join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                    join role in _context.Roles on userRole.RoleId equals role.Id
+                                    where role.Name == "Admin"
+                                    select new UtilisateurDto
+                                    {
+                                        Id = user.Id,
+                                        UserName = user.UserName,
+                                        Email = user.Email,
+                                        Nom = user.Nom,
+                                        Role = role.Name,
+                                        Prenom = user.Prenom,
+                                        Adresse = user.Adresse,
+                                        Disponiblite = user.Disponiblite,
+                                        Actif = user.Actif
+                                    }).ToListAsync();
+
+            return usersInRole;
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace webapiG2T.Controllers
 
             if (result)
             {
-                return NoContent();
+                return Ok(updatedSousMotif);
             }
 
             return NotFound("Vérifiez le sous-motif, il n'existe plus");

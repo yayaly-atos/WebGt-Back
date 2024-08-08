@@ -52,18 +52,15 @@ namespace webapiG2T.Controllers
         }
 
        
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEntite(int id, [FromBody] EntiteSupport updatedEntite)
+        [HttpPut]
+        public async Task<ActionResult> UpdateEntite( [FromBody] EntiteSupport updatedEntite)
         {
-            if (updatedEntite == null || id != updatedEntite.Id)
-            {
-                return BadRequest("Les données de mise à jour ne sont pas valides.");
-            }
+           
 
-            var entite = await _EntiteService.GetEntiteByIdAsync(id);
+            var entite = await _EntiteService.GetEntiteByIdAsync(updatedEntite.Id);
             if (entite == null)
             {
-                return NotFound($"L'entité avec l'ID {id} n'a pas été trouvée.");
+                return NotFound($"L'entité avec l'ID {updatedEntite.Id} n'a pas été trouvée.");
             }
 
             await _EntiteService.UpdateEntiteAsync(updatedEntite);

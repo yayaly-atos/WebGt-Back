@@ -31,10 +31,18 @@ namespace webapiG2T.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateServiceAsync(Service service)
+        public async Task<Service> UpdateServiceAsync(Service serviceUpdate)
         {
-            _context.Entry(service).State = EntityState.Modified;
+            var service = await _context.Services.FindAsync(serviceUpdate.Id);
+            if (service == null)
+            {
+                return null;
+            }
+
+            _context.Entry(service).CurrentValues.SetValues(serviceUpdate);
+           
             await _context.SaveChangesAsync();
+            return service;
         }
 
        

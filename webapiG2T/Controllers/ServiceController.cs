@@ -49,22 +49,19 @@ namespace webapiG2T.Controllers
             return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
         }
         [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Service service)
+        [HttpPut]
+        public async Task<IActionResult> Update( [FromBody] Service service)
         {
-            if (service == null || service.Id != id)
-            {
-                return BadRequest();
-            }
+            
 
-            var existingService = await _serviceService.GetServiceByIdAsync(id);
-            if (existingService == null)
+            var existingService = await _serviceService.GetServiceByIdAsync(service.Id);
+            if (existingService==null )
             {
                 return NotFound();
             }
 
             await _serviceService.UpdateServiceAsync(service);
-            return NoContent();
+            return Ok(service);
         }
 
        
