@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using webapiG2T.Services.Implementations;
 using webapiG2T.Services.Interfaces;
 
 namespace webapiG2T.Controllers
@@ -99,6 +100,19 @@ namespace webapiG2T.Controllers
                 return NotFound(new { Message = "Pas d'adminitrateurs touves" });
             }
             return Ok(admins);
+        }
+
+        [HttpGet("superviseur/{entiteID}")]
+        public async Task<IActionResult> GetSuperviseurByEntite(string entiteID)
+        {
+            var superviseurId = await _utIlisateurService.GetUsersSuperviseurByEntite(entiteID);
+
+            if (superviseurId == null)
+            {
+                return NotFound("Aucun superviseur trouvé pour cette entité.");
+            }
+
+            return Ok(superviseurId);
         }
 
     }

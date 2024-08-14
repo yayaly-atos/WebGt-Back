@@ -37,6 +37,7 @@ namespace webapiG2T.Services.Implementations
                 .Include(I => I.Superviseur)
                 .Include(i => i.NiveauDurgence)
                 .Include(i => i.Canal)
+                .Include(i => i.Agent)    
                 .Include(i => i.sousMotif)
                 .ThenInclude(sm => sm.Motif)
                 .Include(i => i.Teleconseiller)
@@ -192,9 +193,7 @@ namespace webapiG2T.Services.Implementations
               .OrderBy(es => es.Id)
              .FirstOrDefaultAsync();
             int idEntite = incident.EntiteSupport.Id;
-            incident.Superviseur = await _context.Utilisateurs
-           .Where(u => u.EntiteSupportId == idEntite)
-           .FirstOrDefaultAsync();
+            incident.Superviseur = await _context.Utilisateurs.FindAsync(await GetUsersSuperviseurByEntite(idEntite.ToString()));
             incident.StatutIncident = "nouveau";
             incident.Teleconseiller = await _context.Utilisateurs.FindAsync(id);
 
@@ -576,9 +575,7 @@ namespace webapiG2T.Services.Implementations
             incident.StatutIncident = "nouveau";
             incident.Agent=null;
             incident.CommentaireEscalade = commentaire;
-            incident.Superviseur = await _context.Utilisateurs
-          .Where(u => u.EntiteSupportId == entite.Id)
-          .FirstOrDefaultAsync();
+            incident.Superviseur = await _context.Utilisateurs.FindAsync(await GetUsersSuperviseurByEntite(entite.Id.ToString()));
 
             var historiqueIncident = new HistoriqueIncident
             {
@@ -742,6 +739,30 @@ namespace webapiG2T.Services.Implementations
                 incidentDtos.Add(await MapToIncidentDtoAsync(incident));
             }
             return incidentDtos;
+        }
+
+
+        public async Task<string> GetUsersSuperviseurByEntite(string entiteID)
+        {
+            var utilisateur = await (from user in _context.Users
+                                     join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                     join role in _context.Roles on userRole.RoleId equals role.Id
+                                     where role.Name == "Superviseur" && user.EntiteSupportId.ToString() == entiteID
+                                     select new UtilisateurDto
+                                     {
+                                         Id = user.Id,
+                                         Nom = user.Nom,
+                                         Prenom = user.Prenom,
+                                         Email = user.Email,
+                                     }).FirstOrDefaultAsync();
+
+           
+            if (utilisateur == null)
+            {
+                return null;
+            }
+
+            return utilisateur.Id;
         }
     }
 }

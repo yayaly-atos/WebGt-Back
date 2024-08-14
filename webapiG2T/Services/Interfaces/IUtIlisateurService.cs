@@ -20,6 +20,8 @@ namespace webapiG2T.Services.Interfaces
 
         Task<List<UtilisateurDto>> GetAdminById();
 
+        Task<string> GetUsersSuperviseurByEntite(string entiteID);
+
 
     }
 }

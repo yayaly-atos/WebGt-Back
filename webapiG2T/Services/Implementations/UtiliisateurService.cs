@@ -167,5 +167,28 @@ namespace webapiG2T.Services.Implementations
 
             return usersInRole;
         }
+
+        public async Task<string> GetUsersSuperviseurByEntite(string entiteID)
+        {
+            var utilisateur = await (from user in _context.Users
+                                     join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                     join role in _context.Roles on userRole.RoleId equals role.Id
+                                     where role.Name == "Superviseur" && user.EntiteSupportId.ToString() == entiteID
+                                     select new UtilisateurDto
+                                     {
+                                         Id = user.Id,
+                                         Nom = user.Nom,
+                                         Prenom = user.Prenom,
+                                         Email = user.Email,
+                                     }).FirstOrDefaultAsync();
+
+
+            if (utilisateur == null)
+            {
+                return null;
+            }
+
+            return utilisateur.Id;
+        }
     }
 }
