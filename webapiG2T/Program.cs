@@ -100,7 +100,6 @@ builder.Services.AddScoped<ISLaService, SlaService>();
 builder.Services.AddScoped<IUtIlisateurService, UtiliisateurService>();
 builder.Services.AddScoped<IEntiteSupport, EntiteSupportService>();
 builder.Services.AddScoped<IprestataireService, PrestataireService>();
-builder.Services.AddTransient<IEmailService, SmtpEmailService>();
 //builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddSwaggerGen(options =>
